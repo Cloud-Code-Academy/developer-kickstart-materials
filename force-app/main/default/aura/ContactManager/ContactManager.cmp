@@ -1,0 +1,28 @@
+<aura:component controller="ContactController" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global">
+    <!-- Attributes -->
+    <aura:attribute name="contact" type="Contact" default="{ 'sobjectType': 'Contact' }"/>
+    <aura:attribute name="contacts" type="Contact[]"/>
+
+    <!-- Init handler to load contacts -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <!-- Create/Edit Contact Form -->
+    <div class="slds-box">
+        <lightning:card title="Create/Edit Contact" iconName="standard:contact">
+            <lightning:input name="firstName" label="First Name" value="{!v.contact.FirstName}"/>
+            <lightning:input name="lastName" label="Last Name" value="{!v.contact.LastName}"/>
+            <lightning:input name="email" label="Email" type="email" value="{!v.contact.Email}"/>
+            <lightning:input name="birthdate" label="Birthdate" type="date" value="{!v.contact.Birthdate}"/>
+            <lightning:button label="Save" onclick="{!c.saveContact}" variant="brand"/>
+        </lightning:card>
+    </div>
+
+    <!-- Contacts List -->
+    <div class="slds-box">
+        <lightning:card title="Contacts List" iconName="standard:contact">
+            <aura:iteration items="{!v.contacts}" var="cont">
+                <p><strong>{!cont.FirstName} {!cont.LastName}</strong> - {!cont.Email} - {!cont.Account.Name}</p>
+            </aura:iteration>
+        </lightning:card>
+    </div>
+</aura:component>
