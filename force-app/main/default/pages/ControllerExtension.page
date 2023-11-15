@@ -1,0 +1,19 @@
+<apex:page standardController="Contact" extensions="ContactExtension">
+    <!-- Using standardController for Contact and extending it with ContactExtension -->
+
+    <apex:form>
+        <!-- Displaying details of the contact record -->
+        <apex:pageBlock title="Contact Details">
+            <apex:pageBlockSection>
+                <apex:outputField value="{!Contact.Name}" />
+                <apex:outputField value="{!Contact.Email}" />
+                <apex:outputField value="{!Contact.Description}" />
+            </apex:pageBlockSection>
+
+            <apex:pageBlockButtons>
+                <!-- Button to call the updateContactDetails method in the extension -->
+                <apex:commandButton value="Update Contact" action="{!updateContactDetails}" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

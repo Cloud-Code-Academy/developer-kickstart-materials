@@ -1,0 +1,24 @@
+<apex:page standardController="Contact" recordSetVar="contacts">
+    <apex:form >
+        <apex:pageBlock title="Create/Edit Contact">
+            <apex:pageBlockSection columns="1">
+                <apex:inputField value="{!Contact.FirstName}"/>
+                <apex:inputField value="{!Contact.LastName}"/>
+                <apex:inputField value="{!Contact.Email}"/>
+                <apex:inputField value="{!Contact.Birthdate}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Save"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+
+    <apex:pageBlock title="Contacts List">
+        <apex:pageBlockTable value="{!contacts}" var="cont">
+            <apex:column value="{!cont.FirstName}"/>
+            <apex:column value="{!cont.LastName}"/>
+            <apex:column value="{!cont.Email}"/>
+            <apex:column value="{!cont.Account.Name}"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>

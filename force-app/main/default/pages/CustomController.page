@@ -1,0 +1,36 @@
+<apex:page controller="SimpleController">
+ <!-- Page Header -->
+    <apex:pageBlock title="Welcome to Visualforce!">
+        <!-- PageBlock Component: Used to group sections of the page, similar to a card or panel -->
+
+        <apex:form>
+            <!-- Form Component: Contains input fields and buttons to submit data -->
+
+            <apex:pageBlockSection title="Greeting Form">
+                <!-- PageBlockSection: A section within a pageBlock, used to group related elements -->
+
+                <apex:inputText value="{!name}" label="Enter your name"/>
+                <!-- InputText Component: A text input field. The 'value' attribute is bound to the 'name' property in the controller -->
+
+                <apex:commandButton action="{!submit}" value="Submit" reRender="outputPanel"/>
+                <!-- CommandButton Component: A button that triggers an action in the controller.
+                     The 'action' attribute references a method in the controller. 'reRender' attribute specifies components to refresh after action -->
+            </apex:pageBlockSection>
+            
+
+            <apex:outputPanel id="outputPanel">
+                <!-- OutputPanel Component: A container that groups other components. Specified by 'id' for re-rendering -->
+
+                <apex:pageBlockSection rendered="{!not(isblank(greeting))}">
+                    <!-- The 'rendered' attribute determines if the component should be displayed based on the expression -->
+                    Conditional Section
+                    <apex:outputText value="{!greeting}"/>
+                    <!-- OutputText Component: Displays the 'greeting' value from the controller -->
+                </apex:pageBlockSection>
+
+            </apex:outputPanel>
+
+        </apex:form>
+
+    </apex:pageBlock>
+</apex:page>
