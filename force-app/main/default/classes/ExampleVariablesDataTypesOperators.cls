@@ -7,8 +7,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return The sum of the two numbers, or null if either number is null.
 	 */
 	public static Integer addition(Integer a, Integer b) {
-		Integer sum = a + b;
-		return sum; // Replace null with the variable you used to store the result
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -20,14 +19,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return The difference between the two numbers.
 	 */
 	public static Integer subtraction(Integer a, Integer b) {
-		Integer sum = 0;
-		if (a == null || b == null) {
-			sum = null;
-		} else {
-			sum = a - b;
-		}
-
-		return sum; // Replace null with the variable you used to store the result
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -38,7 +30,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return The product of the two numbers.
 	 */
 	public static Integer multiplication(Integer a, Integer b) {
-		return a * b; // Replace null with the variable you used to store the result
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -50,11 +42,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return The quotient of the division, or 0 if the denominator is zero.
 	 */
 	public static Decimal division(Integer a, Integer b) {
-		if (b == 0) {
-			return 0;
-		}
-
-		return a / b; // Replace null with the variable you used to store the result
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -67,12 +55,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return True if the number is odd, False otherwise.
 	 */
 	public static Boolean isOdd(Integer num) {
-		Integer remainder = Math.mod(num, 2);
-		if (remainder == 0) {
-			return false;
-		} else {
-			return true;
-		}
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -82,7 +65,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return true if the number is negative, false otherwise.
 	 */
 	public static Boolean isNegative(Integer num) {
-		return num < 0; // Replace null with the variable you used to store the result
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -93,13 +76,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return The concatenated string.
 	 */
 	public static String concatenateStrings(String str1, String str2) {
-		if (str1 == null) {
-			str1 = '';
-		}
-		if (str2 == null) {
-			str2 = '';
-		}
-		return str1 + str2;
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -111,8 +88,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return True if the date is today or in the past, False otherwise.
 	 */
 	public static Boolean isDateTodayOrPast(Date dt) {
-		Date today = Date.today();
-		return dt <= today;
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -124,9 +100,8 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return The number of minutes equivalent to the given number of seconds.
 	 */
 	public static Integer convertSecondsToMinutes(Integer seconds) {
-		final Integer SECONDS_PER_MINUTE = 60;
-		Integer minutes = seconds / SECONDS_PER_MINUTE;
-		return minutes;
+		Integer SECONDS_PER_MINUTE;
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -138,7 +113,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return The average of the two numbers.
 	 */
 	public static Double averageOfTwoNumbers(Integer a, Integer b) {
-		return (a + b) / 2.0;
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -147,9 +122,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return Integer.
 	 */
 	public static Integer performIntegerCast(Decimal num) {
-		// Write the code for type casting the divisionResult to an Integer
-		Integer roundedResult = (Integer) num;
-		return roundedResult; // Replace null with the variable you used to store the result
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -162,7 +135,7 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return A Decimal representing the monthly paycheck.
 	 */
 	public static Decimal calculateMonthlyPaycheck(Decimal hourlyRate, Double numberOfHours) {
-		return hourlyRate * numberOfHours * 4; // Replace null with the variable you used to store the result
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -174,7 +147,6 @@ public with sharing class ExampleVariablesDataTypesOperators {
 	 * @return A Decimal representing the yearly paycheck.
 	 */
 	public static Decimal calculateYearlyPaycheck(Decimal hourlyRate, Double numberOfHours) {
-		Decimal weeklyPay = hourlyRate * Decimal.valueOf(numberOfHours);
-		return weeklyPay * 52;
+		return null; // Replace null with the variable you used to store the result
 	}
 }
