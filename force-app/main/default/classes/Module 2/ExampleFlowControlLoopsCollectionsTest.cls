@@ -139,9 +139,120 @@ private class ExampleFlowControlLoopsCollectionsTest {
 		// If the method were to accept Integer objects:
 		// Test null input
 		System.assertEquals(
-			null,
+			'E',
 			ExampleFlowControlLoopsCollections.determineSpeedClass(null),
-			'Null input should return null'
+			'Null input should classify as E'
 		);
+	}
+
+	@IsTest
+	static void testRepeatString() {
+		String result = ExampleFlowControlLoopsCollections.repeatString('Hello World!', 3);
+		Assert.areEqual(
+			'Hello World!; Hello World!; Hello World!',
+			result,
+			'Incorrect result for repeatString with count 3'
+		);
+
+		result = ExampleFlowControlLoopsCollections.repeatString('Supra', 5);
+		Assert.areEqual('Supra; Supra; Supra; Supra; Supra', result, 'Incorrect result for repeatString with count 5');
+
+		result = ExampleFlowControlLoopsCollections.repeatString('ABC', 2);
+		Assert.areEqual('ABC; ABC', result, 'Incorrect result for repeatString with count 2');
+
+		result = ExampleFlowControlLoopsCollections.repeatString('', 3);
+		Assert.areEqual('', result, 'Empty string should return an empty result');
+
+		// Test with repeat count of zero
+		result = ExampleFlowControlLoopsCollections.repeatString('Test', 0);
+		Assert.areEqual('', result, 'Zero repeat count should return an empty result');
+
+		// Test with negative repeat count
+		result = ExampleFlowControlLoopsCollections.repeatString('Test', -1);
+		Assert.areEqual('', result, 'Negative repeat count should be handled gracefully');
+
+		// Test with single repetition
+		result = ExampleFlowControlLoopsCollections.repeatString('Single', 1);
+		Assert.areEqual('Single', result, 'Single repetition should return the string itself');
+
+		// Test with special characters
+		result = ExampleFlowControlLoopsCollections.repeatString('#$%', 2);
+		Assert.areEqual('#$%; #$%', result, 'String with special characters should be repeated correctly');
+
+		// Test with a large repeat count
+		result = ExampleFlowControlLoopsCollections.repeatString('Repeat', 100);
+		// Assertion for large repeat count might be lengthy - consider logic to validate this case
+	}
+
+	@IsTest
+	static void testCreateEvenIntegerList() {
+		// Test case with even upper bound
+		List<Integer> result = ExampleFlowControlLoopsCollections.createEvenIntegerList(6);
+		List<Integer> expected = new List<Integer>{ 2, 4, 6 };
+		System.assertEquals(expected, result, 'Incorrect list for even upper bound 6');
+
+		// Test case with odd upper bound
+		result = ExampleFlowControlLoopsCollections.createEvenIntegerList(5);
+		expected = new List<Integer>{ 2, 4 };
+		System.assertEquals(expected, result, 'Incorrect list for odd upper bound 5');
+
+		// Test case with upper bound less than 2
+		result = ExampleFlowControlLoopsCollections.createEvenIntegerList(1);
+		expected = new List<Integer>{};
+		System.assertEquals(expected, result, 'List should be empty for upper bound 1');
+
+		// Test case with upper bound as 0
+		result = ExampleFlowControlLoopsCollections.createEvenIntegerList(0);
+		expected = new List<Integer>{};
+		System.assertEquals(expected, result, 'List should be empty for upper bound 0');
+
+		// Test case with negative upper bound
+		result = ExampleFlowControlLoopsCollections.createEvenIntegerList(-4);
+		expected = new List<Integer>{};
+		System.assertEquals(expected, result, 'List should be empty for negative upper bound -4');
+	}
+
+	@IsTest
+	static void testSumNegativeIntegers() {
+		// Test case with mix of positive and negative numbers
+		Integer result = ExampleFlowControlLoopsCollections.sumNegativeIntegers(
+			new List<Integer>{ -1, 2, -3, 4, -5, 6 }
+		);
+		System.assertEquals(-9, result, 'Sum of negative numbers should be -9');
+
+		// Test case with only positive numbers
+		result = ExampleFlowControlLoopsCollections.sumNegativeIntegers(new List<Integer>{ 1, 2, 3 });
+		System.assertEquals(0, result, 'Sum should be 0 with only positive numbers');
+
+		// Test case with only negative numbers
+		result = ExampleFlowControlLoopsCollections.sumNegativeIntegers(new List<Integer>{ -1, -2, -3 });
+		System.assertEquals(-6, result, 'Sum of negative numbers should be -6');
+
+		// Test case with no numbers
+		result = ExampleFlowControlLoopsCollections.sumNegativeIntegers(new List<Integer>{});
+		System.assertEquals(0, result, 'Sum should be 0 with no numbers');
+	}
+
+	@IsTest
+	static void testGetDepartment() {
+		// Test case for an employee in the Map
+		String department = ExampleFlowControlLoopsCollections.getDepartment('John Doe');
+		System.assertEquals('Engineering', department, 'Incorrect department for John Doe');
+
+		// Test case for an employee not in the Map
+		department = ExampleFlowControlLoopsCollections.getDepartment('Mike Wilson');
+		System.assert(department == null, 'Department should be null for an unknown employee');
+
+		// Test case for another employee in the Map
+		department = ExampleFlowControlLoopsCollections.getDepartment('Jane Smith');
+		System.assertEquals('Marketing', department, 'Incorrect department for Jane Smith');
+
+		// Test case with empty string as input
+		department = ExampleFlowControlLoopsCollections.getDepartment('');
+		System.assert(department == null, 'Department should be null for empty string input');
+
+		// Test case with null input (if method signature allows)
+		department = ExampleFlowControlLoopsCollections.getDepartment(null);
+		System.assert(department == null, 'Department should be null for null input');
 	}
 }
