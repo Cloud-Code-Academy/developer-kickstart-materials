@@ -80,6 +80,7 @@ public with sharing class ExampleClassesObjectsMethodsTest {
 		);
 	}
 
+	/* UNCOMMENT TEST METHODS BELOW ONCE THE BOOK AND PERSON CLASSES ARE SET UP
 	@IsTest
 	static void testGetMoreAdvancedStudent() {
 		// Test case: one student is PD1 certified and the other is not
@@ -123,7 +124,6 @@ public with sharing class ExampleClassesObjectsMethodsTest {
 			student2
 		);
 		System.assertEquals(null, result, 'Either equally advanced student should be returned');
-
-		// Additional test cases can be added for other scenarios
 	}
+    */
 }

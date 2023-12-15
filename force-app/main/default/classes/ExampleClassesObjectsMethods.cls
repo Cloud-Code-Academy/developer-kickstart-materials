@@ -1,3 +1,10 @@
+/*
+ * Resources:
+ * String class: https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_string.htm
+ * Date class: https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_date.htm
+ * Math class: https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_math.htm
+ * Classes: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_understanding.htm
+ */
 public with sharing class ExampleClassesObjectsMethods {
 	/**
 	 * Performs various string operations and checks on a given string.
@@ -11,17 +18,19 @@ public with sharing class ExampleClassesObjectsMethods {
 	public static List<String> stringOperationsAndChecks(String input) {
 		List<String> results = new List<String>();
 
-		// String operations
-		results.add(String.valueOf(input.length()));
-		results.add(input.substring(0, 5));
-		results.add(input.toLowerCase());
+		// Get the length of the string
 
-		// String checks
-		results.add(String.valueOf(input.startsWith('Hello')));
-		results.add(String.valueOf(input.endsWith('Force')));
-		results.add(String.valueOf(input.contains('Sales')));
+		// Get a substring of the string
 
-		return results;
+		// Convert the string to lowercase
+
+		// Check if the string starts with 'Hello'
+
+		// Check if the string ends with 'Force'
+
+		// Check if the string contains 'Sales'
+
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -32,35 +41,22 @@ public with sharing class ExampleClassesObjectsMethods {
 	 */
 	public static List<Integer> uniqueSentenceAndVowelCount(String sentence) {
 		// Split the sentence into words
-		List<String> words = sentence.split(' ');
 
 		// Create a set to store unique words
-		Set<String> uniqueWords = new Set<String>();
 
 		// Add each word to the set
-		for (String word : words) {
-			uniqueWords.add(word);
-		}
 
 		// Join the unique words back into a sentence
-		String uniqueSentence = String.join(new List<String>(uniqueWords), ' ');
 
-		List<Integer> results = new List<Integer>();
 		// Count vowels in the unique sentence
-		Integer resultIndex = 0;
-		for (String word : uniqueWords) {
-			Integer vowelCount = 0;
-			for (Integer i = 0; i < word.length(); i++) {
-				String character = word.toLowerCase().split('')[i];
-				if (character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u') {
-					vowelCount++;
-				}
-			}
-			results.add(vowelCount);
-			resultIndex++;
-		}
-		// Return the results
-		return results;
+
+		// Iterate through each word in the unique sentence
+
+		// Iterate through each character in the word
+
+		// Check if the character is a vowel
+
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -70,10 +66,9 @@ public with sharing class ExampleClassesObjectsMethods {
 	 */
 	public static Integer generateRandomNumber() {
 		// Use Math class to generate number between 0 and 100
-		Integer randomInteger = (Integer) (Math.random() * 100);
 
 		// Return the random integer
-		return randomInteger;
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -84,26 +79,12 @@ public with sharing class ExampleClassesObjectsMethods {
 	 */
 	public static Integer getMonthNumber(String monthName) {
 		// Define a map of months
-		Map<String, Integer> months = new Map<String, Integer>{
-			'January' => 1,
-			'February' => 2,
-			'March' => 3,
-			'April' => 4,
-			'May' => 5,
-			'June' => 6,
-			'July' => 7,
-			'August' => 8,
-			'September' => 9,
-			'October' => 10,
-			'November' => 11,
-			'December' => 12
-		};
+		// January => 1, February => 2, March => 3, April => 4, May => 5, June => 6, July => 7, August => 8, September => 9, October => 10, November => 11, December => 12
 
 		// Get the month number from the map using the month name
-		Integer monthNumber = months.get(monthName);
 
 		// Return the month number
-		return monthNumber;
+		return null; // Replace null with the variable you used to store the result
 	}
 
 	/**
@@ -114,57 +95,25 @@ public with sharing class ExampleClassesObjectsMethods {
 	 */
 	public class Student {
 		// Declare instance variables - name, PD1 certification status, and program completion amount
-		private String name;
-		private Boolean pd1Certified;
-		private Integer programCompleteAmount;
 
-		// Constructor to initialize the name, PD1 certification status, and program completion amount
-		public Student(String name, Integer programCompleteAmount) {
-			this.name = name;
-			this.pd1Certified = false;
-			this.programCompleteAmount = programCompleteAmount;
-		}
+		// Constructor to initialize the name, and program completion amount
 
 		// Method that returns the details of the student
 		public String introduceYourself() {
-			return 'Hello, my name is ' +
-				this.name +
-				', PD1 Certified: ' +
-				this.pd1Certified +
-				', Program Completion: ' +
-				this.programCompleteAmount +
-				'%.';
+			return null; // Replace null with the variable you used to store the result
 		}
 
 		// Getter method that returns the name of the student
-		public String getName() {
-			return this.name;
-		}
 
 		// Getter method that returns the PD1 certification status
-		public Boolean isPd1Certified() {
-			return this.pd1Certified;
-		}
 
 		// Getter method that returns the program completion amount
-		public Integer getProgramCompleteAmount() {
-			return this.programCompleteAmount;
-		}
 
 		// Setter method that sets the name of the student
-		public void setName(String name) {
-			this.name = name;
-		}
 
 		// Setter method that sets the PD1 certification status
-		public void setPd1Certified(Boolean pd1Certified) {
-			this.pd1Certified = pd1Certified;
-		}
 
 		// Setter method that sets the program completion amount
-		public void setProgramCompleteAmount(Integer programCompleteAmount) {
-			this.programCompleteAmount = programCompleteAmount;
-		}
 	}
 
 	/**
@@ -178,20 +127,10 @@ public with sharing class ExampleClassesObjectsMethods {
 	 * @return The Student object of the student who is further ahead or PD1 certified.
 	 */
 	public static Student getMoreAdvancedStudent(Student student1, Student student2) {
-		// Check PD1 certification
-		if (student1.isPd1Certified() && !student2.isPd1Certified()) {
-			return student1;
-		} else if (!student1.isPd1Certified() && student2.isPd1Certified()) {
-			return student2;
-		} else {
-			// Compare program completion amounts
-			if (student1.getProgramCompleteAmount() > student2.getProgramCompleteAmount()) {
-				return student1;
-			} else if (student1.getProgramCompleteAmount() < student2.getProgramCompleteAmount()) {
-				return student2;
-			} else {
-				return null;
-			}
-		}
+		// Check if one student is PD1 certified and the other is not
+
+		// Compare program completion amounts
+
+		return null; // Replace null with the variable you used to store the result
 	}
 }
