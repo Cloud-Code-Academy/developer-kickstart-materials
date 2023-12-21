@@ -124,6 +124,7 @@ public with sharing class ExampleDMLOperationsTest {
 
 		// Create a list of leads
 		List<Lead> leads = new List<Lead>{ phoneLead, webLead };
+		insert leads;
 
 		Test.startTest();
 		ExampleDMLOperations.insertAndDeletePhoneLeads(leads);

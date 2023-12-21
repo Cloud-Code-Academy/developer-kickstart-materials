@@ -106,13 +106,10 @@ public with sharing class ExampleDMLOperations {
 	}
 
 	/**
-	 * Insert a list of Leads and then delete only those with 'Phone' as their source.
+	 * Delete only those with 'Phone' as their source.
 	 * @param leads The list of Lead objects to be inserted and conditionally deleted.
 	 */
 	public static void insertAndDeletePhoneLeads(List<Lead> leads) {
-		// Insert the Leads
-		insert leads;
-
 		// Prepare a List to store the Leads to be deleted
 		List<Lead> leadsToDelete = new List<Lead>();
 
