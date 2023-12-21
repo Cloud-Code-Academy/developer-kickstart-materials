@@ -6,12 +6,11 @@ public with sharing class ExampleDMLOperations {
 	 * @return The new Lead.
 	 */
 	public static Lead createLead(String lastName, String company) {
-		// Create a new Lead
-		Lead newLead = new Lead(LastName = lastName, Company = company);
+		// Create a new Lead setting the last name and company
 
 		// Insert the Lead
-		insert newLead;
-		return newLead;
+
+		return null;
 	}
 
 	/**
@@ -21,15 +20,10 @@ public with sharing class ExampleDMLOperations {
 	 * @return A list of created Lead records.
 	 */
 	public static List<Lead> createMultipleLeads(List<String> lastNames) {
-		List<Lead> leads = new List<Lead>();
-		String company = 'Acme Inc';
+		// Loop through the last names and create a new Lead for each one
 
-		for (String lastName : lastNames) {
-			Lead newLead = createLead(lastName, company);
-			leads.add(newLead);
-		}
-
-		return leads;
+		// Return the list of Leads
+		return null;
 	}
 
 	/**
@@ -41,18 +35,12 @@ public with sharing class ExampleDMLOperations {
 	 */
 	public static void updateCaseListBasedOnOrigin(List<Case> cases) {
 		// Iterate over the cases
-		for (Case c : cases) {
-			if (c.Origin == 'Web') {
-				c.Description = 'Web Inquiry';
-			} else if (c.Origin == 'Email') {
-				c.Description = 'Email Inquiry';
-			} else if (c.Origin == 'Phone') {
-				c.Description = 'Phone Inquiry';
-			}
-		}
+
+		// if the Origin is 'Web', set the Description to 'Web Inquiry'.
+		// if the origin is 'Email', set the Description to 'Email Inquiry'.
+		// if the origin is 'Phone', set the Description to 'Phone Inquiry'.
 
 		// Update the Cases
-		update cases;
 	}
 
 	/**
@@ -63,20 +51,15 @@ public with sharing class ExampleDMLOperations {
 	 * @return The Account that was upserted.
 	 */
 	public static Account upsertAccount(String accountName) {
-		// Prepare an Account with the given name
-		Account account;
-
 		// Query for the Account
 		List<Account> accounts = [SELECT Id FROM Account WHERE Name = :accountName];
-		if (accounts.size() > 0) {
-			account = accounts[0];
-		} else {
-			account = new Account(Name = accountName);
-		}
+
+		// if the Account exists, update it
+
+		// otherwise, create a new Account
 
 		// Upsert the Account
-		upsert account;
-		return account;
+		return null;
 	}
 
 	/**
@@ -86,23 +69,15 @@ public with sharing class ExampleDMLOperations {
 	 * @param contactsToUpsert List of Contacts to be upserted and linked to accounts.
 	 */
 	public static void upsertAccountsWithContacts(List<Contact> contactsToUpsert) {
-		// Prepare a map to link Account Names with their Ids
-		Map<String, Id> accountNameToIdMap = new Map<String, Id>();
-
 		// Loop through each Contact
-		for (Contact contact : contactsToUpsert) {
-			// Extract the Account Name from Contact's LastName
-			String accountName = contact.LastName;
 
-			// Get the account based on the name or create one if it doesn't exist
-			Account upsertedAccount = upsertAccount(accountName);
+		// Extract the Account Name from Contact's LastName
 
-			// Link the Contact to its Account using the Account Id
-			contact.AccountId = upsertedAccount.Id;
-		}
+		// Get the account based on the name or create one if it doesn't exist
+
+		// Link the Contact to its Account using the Account Id
 
 		// Upsert the Contacts
-		upsert contactsToUpsert;
 	}
 
 	/**
@@ -110,22 +85,10 @@ public with sharing class ExampleDMLOperations {
 	 * @param leads The list of Lead objects to be inserted and conditionally deleted.
 	 */
 	public static void insertAndDeletePhoneLeads(List<Lead> leads) {
-		// Insert the Leads
-		insert leads;
-
 		// Prepare a List to store the Leads to be deleted
-		List<Lead> leadsToDelete = new List<Lead>();
 
 		// Loop through the inserted Leads and add to delete list if source is 'Phone'
-		for (Lead lead : leads) {
-			if (lead.LeadSource == 'Phone') {
-				leadsToDelete.add(lead);
-			}
-		}
 
 		// Delete the filtered Leads
-		if (!leadsToDelete.isEmpty()) {
-			delete leadsToDelete;
-		}
 	}
 }
