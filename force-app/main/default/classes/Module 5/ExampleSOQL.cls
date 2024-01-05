@@ -17,7 +17,7 @@ public with sharing class ExampleSOQL {
 	//}
 
 	/**
-	 * Retrieves all Opportunities related to Accounts with names starting with 'Test%' and with a close date within the last 'days' days.
+	 * Retrieves all Opportunities related to Accounts with names starting with 'Test' and with a close date within the last 'days' days.
 	 * @param days The number of days to look back for the close date.
 	 * @return A list of Opportunity records.
 	 */
@@ -51,7 +51,6 @@ public with sharing class ExampleSOQL {
 
 	/**
 	 * Sets the 'Primary_Contact__c' field for the provided Opportunities from the first related Contact of the Account, ordered by first name descending.
-	 * @param A list of 'Closed Won' Opportunities.
 	 * @return void.
 	 */
 	public static void setPrimaryContact() {
