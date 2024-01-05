@@ -18,7 +18,7 @@ public with sharing class ExampleSOQLTest {
 		insert new List<Opportunity>{ testOpp1, testOpp2 };
 
 		// Call the method to test
-		List<Opportunity> opportunities = ExampleSOQL.getAllOpportunities();
+		List<Opportunity> opportunities = null; //Replace null with your method call from SOQL class
 
 		// Assert that the number of opportunities returned is correct
 		System.assertEquals(2, opportunities.size(), 'Number of opportunities returned is incorrect.');
@@ -58,7 +58,7 @@ public with sharing class ExampleSOQLTest {
 
 		// Call the method to test
 		Decimal minAmount = 1500;
-		List<Id> oppIds = ExampleSOQL.getOpportunityIdsByStageNameAndAmount(minAmount);
+		List<Id> oppIds = null; //Replace null with your method call from SOQL class
 
 		// Assert that only one opportunity returned matches the criteria
 		System.assertEquals(1, oppIds.size(), 'Number of opportunities returned is incorrect.');
@@ -72,20 +72,6 @@ public with sharing class ExampleSOQLTest {
 			);
 			System.assert(opp.Amount > minAmount, 'Opportunity amount should be greater than ' + minAmount);
 		}
-	}
-
-	/**
-	 * Retrieves all Opportunities related to Accounts with names starting with 'Test%' and with a close date within the last 'days' days.
-	 * @param days The number of days to look back for the close date.
-	 * @return A list of Opportunity records.
-	 */
-	public static List<Opportunity> getOpportunitiesByAccountNameAndCloseDate(Integer days) {
-		Date d = System.today() - days;
-		return [
-			SELECT Id, Name, CloseDate, Account.Name
-			FROM Opportunity
-			WHERE Account.Name LIKE 'Test%' AND CloseDate < :d
-		];
 	}
 
 	@IsTest
@@ -112,7 +98,7 @@ public with sharing class ExampleSOQLTest {
 
 		// Call the method to test
 		Integer days = 7;
-		List<Opportunity> opportunities = ExampleSOQL.getOpportunitiesByAccountNameAndCloseDate(days);
+		List<Opportunity> opportunities = null; //Replace null with your method call from SOQL class
 
 		// Assert that the correct number of opportunities are returned
 		System.assertEquals(1, opportunities.size(), 'Incorrect number of opportunities returned.');
