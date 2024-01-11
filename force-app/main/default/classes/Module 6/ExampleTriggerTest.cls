@@ -1,17 +1,22 @@
 /*
+ * Trigger Exercise Description
  * Complete the following exercises based on the tests.
- * Create triggers on account and on opportunity.
+ * Create triggers on Account and Opportunity with specific behaviors.
  *
- * Account trigger should do the following:
- * 1. Set the account type to prospect.
- * 2. Copy the shipping address to the billing address.
- * 3. Set the account rating to hot.
- * 4. Create a contact for each account inserted.
+ * Account Trigger:
+ * 1. When an account is inserted, set its rating to 'Hot' if the Phone, Website, and Fax fields all have values.
+ * 2. When an account is inserted, automatically create a default Case related to the account. The Case should have the following default values:
+ *    - Subject = 'Default Case'
+ *    - Status = 'New'
+ *    - Priority = 'Medium'
+ * 3. Ensure that no additional Cases are created when an existing account is updated.
  *
- * Opportunity trigger should do the following:
- * 1. Validate that the amount is greater than 5000.
- * 2. Prevent the deletion of a closed won opportunity for a banking account.
- * 3. Set the primary contact on the opportunity to the contact with the title of CEO.
+ * Opportunity Trigger:
+ * 1. Validate that the amount of an opportunity is greater than 5000 when it is inserted.
+ * 2. Set the primary contact on an updated opportunity to the contact with the title of 'CEO' on the same account.
+ *
+ * Test Class: ExampleTriggerTest
+ * This test class should include methods to validate the correct behavior of each trigger based on the above requirements.
  *
  * RESOURCES:
  * - Trigger Context Variables: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_triggers_context_variables.htm
