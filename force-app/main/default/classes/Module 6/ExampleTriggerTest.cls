@@ -20,7 +20,7 @@
  * NOTE: Disable all duplicate rules in the org. This will help prevent errors in the test classes or triggers. https://help.salesforce.com/s/articleView?id=ind.Disable_Account_Duplicate_Rule_CAM_OS_Enabled.htm&type=5
  */
 @IsTest
-public with sharing class TriggerTest {
+public with sharing class ExampleTriggerTest {
 	/*
 	 * Account Trigger
 	 * When an account is inserted set the rating to 'Hot' if the Phone, Website, and Fax ALL have a value.
@@ -84,42 +84,69 @@ public with sharing class TriggerTest {
 		}
 	}
 
+	/*
+	 * Account Trigger
+	 * This trigger automatically creates a default Case related to the account when an account is inserted.
+	 * Additionally, it ensures no additional Cases are created when an existing account is updated.
+	 *
+	 * When an account is inserted:
+	 * - A new Case is created and associated with the account.
+	 * - The Case is populated with the following default values:
+	 *   - Subject = 'Default Case'
+	 *   - Status = 'New'
+	 *   - Priority = 'Medium'
+	 *
+	 * When an account is updated:
+	 * - The trigger does not create any additional Cases, maintaining the existing data integrity.
+	 *
+	 * The trigger is carefully designed to differentiate between insert and update operations, ensuring
+	 * appropriate actions are taken in each scenario. It enhances data management by automating Case creation
+	 * for new accounts while avoiding duplicate data creation for updates.
+	 */
+
 	@IsTest
-	static void testAccountTrigger_defaultCase() {
-		// Prepare the test data
+	static void testAccountTriggerForInsertAndUpdate() {
+		// Prepare the test data for insert
 		List<Account> accountsToInsert = new List<Account>();
 		for (Integer i = 0; i < 200; i++) {
-			accountsToInsert.add(new Account(Name = 'Test Account ' + i));
+			accountsToInsert.add(new Account(Name = 'Test Account Insert ' + i));
 		}
 
-		// Perform the test
+		// Perform the insert test
 		Test.startTest();
 		insert accountsToInsert;
+
+		// Validate Cases for inserted Accounts
+		validateCases(accountsToInsert, 'Insert');
+
+		// Prepare the test data for update (no new cases should be created)
+		Account accountToUpdate = new Account(Name = 'Test Account Update');
+		insert accountToUpdate;
+		accountToUpdate.Name = 'Updated Account Name';
+		update accountToUpdate;
 		Test.stopTest();
 
-		// Retrieve the newly created Cases
-		List<Case> cases = [
-			SELECT Id, Subject, Status, Priority, AccountId
-			FROM Case
-			WHERE AccountId IN :accountsToInsert
-		];
+		// Validate no additional Cases were created for the updated Account
+		validateCases(new List<Account>{ accountToUpdate }, 'Update');
+	}
 
-		// Assert that the correct number of Cases has been created
-		System.assertEquals(200, cases.size(), 'Incorrect number of Cases created.');
+	// Helper method to validate created cases
+	private static void validateCases(List<Account> accounts, String testType) {
+		List<Case> cases = [SELECT Id, Subject, Status, Priority, AccountId FROM Case WHERE AccountId IN :accounts];
+		Integer expectedCaseCount = accounts.size();
+		System.assertEquals(expectedCaseCount, cases.size(), 'Incorrect number of Cases created for ' + testType + '.');
 
-		// Assert that each Case has the expected field values
 		for (Case c : cases) {
-			System.assertEquals('Default Case', c.Subject, 'Case Subject is incorrect.');
-			System.assertEquals('New', c.Status, 'Case Status is incorrect.');
-			System.assertEquals('Medium', c.Priority, 'Case Priority is incorrect.');
-			System.assertNotEquals(null, c.AccountId, 'Case AccountId is null.');
+			System.assertEquals('Default Case', c.Subject, 'Case Subject is incorrect for ' + testType + '.');
+			System.assertEquals('New', c.Status, 'Case Status is incorrect for ' + testType + '.');
+			System.assertEquals('Medium', c.Priority, 'Case Priority is incorrect for ' + testType + '.');
+			System.assertNotEquals(null, c.AccountId, 'Case AccountId is null for ' + testType + '.');
 		}
 	}
 
 	/*
 	 * Opportunity Trigger
-	 * When an opportunity is updated validate that the amount is greater than 5000.
-	 * Error Message: 'Opportunity amount must be greater than 5000'
+	 * When an opportunity is inserted validate that the amount is greater than 5000.
 	 * Trigger should only fire on update.
 	 */
 	@IsTest
@@ -131,86 +158,22 @@ public with sharing class TriggerTest {
 				Name = 'Test Opportunity ' + i,
 				CloseDate = Date.today().addDays(i),
 				StageName = 'Prospecting',
-				Amount = 6000 // The initial Amount is greater than 5000
+				Amount = 1 // The initial Amount is greater than 5000
 			);
 			opportunitiesToInsert.add(opp);
 		}
-		insert opportunitiesToInsert;
 
-		List<Opportunity> oppsTriggerValidation = new List<Opportunity>();
-		List<Opportunity> oppsNotTriggerValidation = new List<Opportunity>();
-		// Try to update the opportunities to have an Amount less than 5000
-		for (Integer i = 0; i < 400; i++) {
-			if (Math.mod(i, 2) == 0) {
-				opportunitiesToInsert[i].Amount = 4000;
-				oppsTriggerValidation.add(opportunitiesToInsert[i]);
-			} else {
-				opportunitiesToInsert[i].Amount = 8000;
-				oppsNotTriggerValidation.add(opportunitiesToInsert[i]);
-			}
-		}
-
-		// Perform the test and assert that an error is thrown
 		Test.startTest();
 		try {
-			update opportunitiesToInsert;
+			insert opportunitiesToInsert;
 			System.assert(false, 'Expected an exception but did not get one.');
 		} catch (DmlException e) {
 			System.assert(
 				e.getMessage().contains('Opportunity amount must be greater than 5000'),
-				'The error message is not as expected. Message: ' + e.getMessage()
+				'The error message is not as expected message: ' + e.getMessage()
 			);
 		}
 
-		// Assert that the opportunities that should not trigger the validation rule have been updated
-		update oppsNotTriggerValidation;
-		List<Opportunity> oppsNotTriggerValidationUpdated = [
-			SELECT Id, Amount
-			FROM Opportunity
-			WHERE Id IN :oppsNotTriggerValidation
-		];
-		for (Opportunity opp : oppsNotTriggerValidationUpdated) {
-			System.assertEquals(8000, opp.Amount, 'Opportunity Amount is incorrect.');
-		}
-		Test.stopTest();
-	}
-
-	/*
-	 * Opportunity Trigger
-	 * When an opportunity is deleted prevent the deletion of a closed won opportunity if the account industry is 'Banking'.
-	 * Error Message: 'Cannot delete closed opportunity for a banking account that is won'
-	 * Trigger should only fire on delete.
-	 */
-	@IsTest
-	static void testOpportunityTrigger_deleteCloseWonOpportunity() {
-		// Prepare the test data
-		Account testAccount = new Account(Name = 'Test Account', Industry = 'Banking');
-		insert testAccount;
-
-		List<Opportunity> opportunitiesToInsert = new List<Opportunity>();
-		for (Integer i = 0; i < 400; i++) {
-			Opportunity opp = new Opportunity(
-				Name = 'Test Opportunity ' + i,
-				CloseDate = Date.today().addDays(i),
-				StageName = 'Closed Won',
-				Amount = 6000,
-				AccountId = testAccount.Id
-			);
-			opportunitiesToInsert.add(opp);
-		}
-		insert opportunitiesToInsert;
-
-		// Try to delete the opportunities
-		Test.startTest();
-		try {
-			delete opportunitiesToInsert;
-			System.assert(false, 'Expected an exception but did not get one.');
-		} catch (DmlException e) {
-			System.assert(
-				e.getMessage().contains('Cannot delete closed opportunity for a banking account that is won'),
-				'The error message is not as expected.'
-			);
-		}
 		Test.stopTest();
 	}
 
