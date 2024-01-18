@@ -99,6 +99,8 @@ public with sharing class ExampleDMLOperationsTest {
 
 	@IsTest
 	static void testUpsertAccountsWithContacts() {
+		Account testAccount = new Account(Name = 'Doe');
+		insert testAccount;
 		// Create test contacts with last names matching account names
 		List<Contact> testContacts = new List<Contact>{
 			new Contact(LastName = 'Doe', FirstName = 'John'),
@@ -109,10 +111,18 @@ public with sharing class ExampleDMLOperationsTest {
 		ExampleDMLOperations.upsertAccountsWithContacts(testContacts);
 		Test.stopTest();
 
+		List<Account> accounts = [SELECT Id FROM Account];
+		System.assertEquals(2, accounts.size(), 'Two accounts should be created');
+
 		// Query the upserted contacts to verify account links
-		List<Contact> upsertedContacts = [SELECT Id, LastName, AccountId FROM Contact WHERE Id IN :testContacts];
+		List<Contact> upsertedContacts = [
+			SELECT Id, LastName, AccountId, Account.Name
+			FROM Contact
+			WHERE Id IN :testContacts
+		];
 		for (Contact c : upsertedContacts) {
 			System.assertNotEquals(null, c.AccountId, 'Contact should be linked to an Account');
+			System.assertEquals(c.LastName, c.Account.Name, 'Contact last name should match Account name');
 		}
 	}
 
