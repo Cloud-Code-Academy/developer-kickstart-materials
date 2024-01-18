@@ -27,93 +27,93 @@ trigger AnotherOpportunityTrigger on Opportunity(
 	after delete,
 	after undelete
 ) {
-	if (Trigger.isBefore) {
-		if (Trigger.isInsert) {
-			for (Opportunity opp : Trigger.new) {
-				if (opp.Type == null) {
-					opp.Type = 'New Customer';
-				}
-			}
-		} else if (Trigger.isUpdate) {
-			for (Opportunity opp : Trigger.new) {
-				Opportunity oldOpp = Trigger.oldMap.get(opp.Id);
-				if (opp.StageName != oldOpp.StageName && opp.Id == oldOpp.Id) {
-					opp.Description += '\n Stage Change:' + opp.StageName + ':' + DateTime.now().format();
-				}
-			}
-		} else if (Trigger.isDelete) {
-			for (Opportunity oldOpp : Trigger.old) {
-				if (oldOpp.IsClosed) {
-					oldOpp.addError('Cannot delete closed opportunity');
-				}
-			}
-		}
-	}
+	// if (Trigger.isBefore) {
+	// 	if (Trigger.isInsert) {
+	// 		for (Opportunity opp : Trigger.new) {
+	// 			if (opp.Type == null) {
+	// 				opp.Type = 'New Customer';
+	// 			}
+	// 		}
+	// 	} else if (Trigger.isUpdate) {
+	// 		for (Opportunity opp : Trigger.new) {
+	// 			Opportunity oldOpp = Trigger.oldMap.get(opp.Id);
+	// 			if (opp.StageName != oldOpp.StageName && opp.Id == oldOpp.Id) {
+	// 				opp.Description += '\n Stage Change:' + opp.StageName + ':' + DateTime.now().format();
+	// 			}
+	// 		}
+	// 	} else if (Trigger.isDelete) {
+	// 		for (Opportunity oldOpp : Trigger.old) {
+	// 			if (oldOpp.IsClosed) {
+	// 				oldOpp.addError('Cannot delete closed opportunity');
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-	List<Task> tasks = new List<Task>();
-	if (Trigger.isAfter) {
-		if (Trigger.isInsert) {
-			for (Opportunity opp : Trigger.new) {
-				Task t = new Task();
-				t.Subject = 'Call Primary Contact';
-				t.WhatId = opp.Id;
-				t.WhoId = opp.Primary_Contact__c;
-				t.OwnerId = opp.OwnerId;
-				t.ActivityDate = Date.today().addDays(3);
-				tasks.add(t);
-			}
-		} else if (Trigger.isDelete) {
-			notifyOwnersOpportunityDeleted(Trigger.old);
-		} else if (Trigger.isUndelete) {
-			assignPrimaryContact(Trigger.newMap);
-		}
+	// List<Task> tasks = new List<Task>();
+	// if (Trigger.isAfter) {
+	// 	if (Trigger.isInsert) {
+	// 		for (Opportunity opp : Trigger.new) {
+	// 			Task t = new Task();
+	// 			t.Subject = 'Call Primary Contact';
+	// 			t.WhatId = opp.Id;
+	// 			t.WhoId = opp.Primary_Contact__c;
+	// 			t.OwnerId = opp.OwnerId;
+	// 			t.ActivityDate = Date.today().addDays(3);
+	// 			tasks.add(t);
+	// 		}
+	// 	} else if (Trigger.isDelete) {
+	// 		notifyOwnersOpportunityDeleted(Trigger.old);
+	// 	} else if (Trigger.isUndelete) {
+	// 		assignPrimaryContact(Trigger.newMap);
+	// 	}
 
-		insert tasks;
-	}
+	// 	insert tasks;
+	// }
 
-	private static void notifyOwnersOpportunityDeleted(List<Opportunity> opps) {
-		List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
-		Map<Id, User> userMap = new Map<Id, User>([SELECT Id, Email FROM User]);
-		for (Opportunity opp : opps) {
-			Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-			String[] toAddresses = new List<String>{ userMap.get(opp.OwnerId).Email };
-			mail.setToAddresses(toAddresses);
-			mail.setSubject('Opportunity Deleted : ' + opp.Name);
-			mail.setPlainTextBody('Your Opportunity: ' + opp.Name + ' has been deleted.');
-			mails.add(mail);
-		}
+	// private static void notifyOwnersOpportunityDeleted(List<Opportunity> opps) {
+	// 	List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
+	// 	Map<Id, User> userMap = new Map<Id, User>([SELECT Id, Email FROM User]);
+	// 	for (Opportunity opp : opps) {
+	// 		Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+	// 		String[] toAddresses = new List<String>{ userMap.get(opp.OwnerId).Email };
+	// 		mail.setToAddresses(toAddresses);
+	// 		mail.setSubject('Opportunity Deleted : ' + opp.Name);
+	// 		mail.setPlainTextBody('Your Opportunity: ' + opp.Name + ' has been deleted.');
+	// 		mails.add(mail);
+	// 	}
 
-		try {
-			Messaging.sendEmail(mails);
-		} catch (Exception e) {
-			System.debug('Exception: ' + e.getMessage());
-		}
-	}
+	// 	try {
+	// 		Messaging.sendEmail(mails);
+	// 	} catch (Exception e) {
+	// 		System.debug('Exception: ' + e.getMessage());
+	// 	}
+	// }
 
-	private static void assignPrimaryContact(Map<Id, Opportunity> oppNewMap) {
-		// get map of set of all opportunity account ids
-		Set<Id> oppAccountIds = new Set<Id>();
-		for (Opportunity opp : oppNewMap.values()) {
-			oppAccountIds.add(opp.AccountId);
-		}
+	// private static void assignPrimaryContact(Map<Id, Opportunity> oppNewMap) {
+	// 	// get map of set of all opportunity account ids
+	// 	Set<Id> oppAccountIds = new Set<Id>();
+	// 	for (Opportunity opp : oppNewMap.values()) {
+	// 		oppAccountIds.add(opp.AccountId);
+	// 	}
 
-		Map<Id, Account> accMap = new Map<Id, Account>(
-			[
-				SELECT Id, Name, (SELECT Id FROM Contacts WHERE Title = 'VP Sales')
-				FROM Account
-				WHERE Id IN :oppAccountIds
-			]
-		);
+	// 	Map<Id, Account> accMap = new Map<Id, Account>(
+	// 		[
+	// 			SELECT Id, Name, (SELECT Id FROM Contacts WHERE Title = 'VP Sales')
+	// 			FROM Account
+	// 			WHERE Id IN :oppAccountIds
+	// 		]
+	// 	);
 
-		Map<Id, Opportunity> oppMap = new Map<Id, Opportunity>();
-		for (Opportunity opp : oppNewMap.values()) {
-			if (opp.Primary_Contact__c == null && !accMap.get(opp.AccountId).Contacts.isEmpty()) {
-				Opportunity oppToUpdate = new Opportunity(Id = opp.Id);
-				oppToUpdate.Primary_Contact__c = accMap.get(opp.AccountId).Contacts[0].Id;
-				oppMap.put(opp.Id, oppToUpdate);
-			}
-		}
+	// 	Map<Id, Opportunity> oppMap = new Map<Id, Opportunity>();
+	// 	for (Opportunity opp : oppNewMap.values()) {
+	// 		if (opp.Primary_Contact__c == null && !accMap.get(opp.AccountId).Contacts.isEmpty()) {
+	// 			Opportunity oppToUpdate = new Opportunity(Id = opp.Id);
+	// 			oppToUpdate.Primary_Contact__c = accMap.get(opp.AccountId).Contacts[0].Id;
+	// 			oppMap.put(opp.Id, oppToUpdate);
+	// 		}
+	// 	}
 
-		update oppMap.values();
-	}
+	// 	update oppMap.values();
+	// }
 }

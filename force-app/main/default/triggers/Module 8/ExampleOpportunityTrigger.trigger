@@ -9,52 +9,30 @@ trigger ExampleOpportunityTrigger on Opportunity(
 ) {
 	switch on Trigger.operationType {
 		when BEFORE_INSERT {
-			for (Opportunity opp : Trigger.new) {
-				if (opp.Amount < 5000) {
-					opp.addError('Opportunity amount must be greater than 5000');
-				}
-			}
+			//Opportunity Trigger - Validate Opportunity
+			ExampleOpportunityHandler.validateOpportunity(Trigger.new);
+			//Another Opportunity Trigger - Set Type
+			ExampleOpportunityHandler.setOpportunityType(Trigger.new);
 		}
 		when BEFORE_UPDATE {
-			//Get contacts related to the opportunity account
-			Set<Id> accountIds = new Set<Id>();
-			for (Opportunity opp : Trigger.new) {
-				accountIds.add(opp.AccountId);
-			}
-
-			Map<Id, Contact> contacts = new Map<Id, Contact>(
-				[
-					SELECT Id, FirstName, AccountId
-					FROM Contact
-					WHERE AccountId IN :accountIds AND Title = 'CEO'
-					ORDER BY FirstName ASC
-				]
-			);
-			Map<Id, Contact> accountIdToContact = new Map<Id, Contact>();
-
-			for (Contact cont : contacts.values()) {
-				if (!accountIdToContact.containsKey(cont.AccountId)) {
-					accountIdToContact.put(cont.AccountId, cont);
-				}
-			}
-
-			for (Opportunity opp : Trigger.new) {
-				if (opp.Primary_Contact__c == null) {
-					if (accountIdToContact.containsKey(opp.AccountId)) {
-						opp.Primary_Contact__c = accountIdToContact.get(opp.AccountId).Id;
-					}
-				}
-			}
+			//Opportunity Trigger - Set Primary Contact
+			ExampleOpportunityHandler.setPrimaryContact(Trigger.new);
+			//Another Opportunity Trigger - Change Description
+			ExampleOpportunityHandler.addStageChangeToDescription(Trigger.new, Trigger.oldMap);
 		}
 		when BEFORE_DELETE {
+			ExampleOpportunityHandler.validateDelete(Trigger.old);
 		}
 		when AFTER_INSERT {
+			ExampleOpportunityHandler.createTaskForPrimaryContact(Trigger.new);
 		}
 		when AFTER_UPDATE {
 		}
 		when AFTER_DELETE {
+			ExampleOpportunityHandler.notifyOwnersOpportunityDeleted(Trigger.old);
 		}
 		when AFTER_UNDELETE {
+			ExampleOpportunityHandler.assignPrimaryContact(Trigger.newMap);
 		}
 	}
 
