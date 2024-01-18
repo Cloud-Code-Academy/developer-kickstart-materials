@@ -64,8 +64,10 @@ public with sharing class ExampleDMLOperations {
 
 	/**
 	 * Upserts accounts and links contacts to them based on the contact's last name and account name.
-	 * Accounts are upserted or found using the upsertAccount method.
+	 * Create or use existing account with contact last name. (Hint: use previous upsertAccount method)
 	 * Contacts are then linked to these accounts based on a full last name match.
+	 * Example Contact Last Name = Doe Link to Account Name = Doe
+	 * Example Contact Last Name = Jane Link to Account Name = Jane
 	 * @param contactsToUpsert List of Contacts to be upserted and linked to accounts.
 	 */
 	public static void upsertAccountsWithContacts(List<Contact> contactsToUpsert) {
