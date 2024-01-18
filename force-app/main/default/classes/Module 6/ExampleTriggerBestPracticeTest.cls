@@ -31,7 +31,7 @@
  * NOTE: Disable all duplicate rules in the org. This will help prevent errors in the test classes or triggers. https://help.salesforce.com/s/articleView?id=ind.Disable_Account_Duplicate_Rule_CAM_OS_Enabled.htm&type=5
  */
 @IsTest
-public with sharing class ExampleTriggerTest {
+public with sharing class ExampleTriggerBestPracticeTest {
 	/*
 	 * Opportunity Trigger
 	 * When an opportunity is inserted validate that the amount is greater than 5000.
