@@ -251,4 +251,229 @@ public with sharing class ExampleTriggerTest {
 			System.assertEquals(opp.Primary_Contact__r.Title, 'CEO', 'Primary contact was not set correctly.');
 		}
 	}
+
+	//Part 2 - AnotherOpportunityTrigger Refactor
+	/*
+	 * AnotherOpportunityTrigger was created by a previous developer and is causing some issues.
+	 * The trigger does not follow best practices and needs to be refactored.
+	 * Look for the following issues and refactor the trigger to follow best practices:
+	 * - Avoid nested for loop - 1 instance
+	 * - Avoid DML inside for loop - 1 instance
+	 * - Bulkify Your Code - 1 instance
+	 * - Avoid SOQL Query inside for loop - 2 instances
+	 * - Stop recursion - 1 instance
+	 * All of the AnotherOpportunityTrigger tests should pass if you have refactored the trigger correctly
+	 */
+	@IsTest
+	private static void testAnotherOpportunityTrigger_setType() {
+		Account acc = new Account(Name = 'Test Account');
+		insert acc;
+
+		Integer numberOfOpps = 5;
+		for (Integer i = 0; i < numberOfOpps; i++) {
+			Opportunity opp = new Opportunity(
+				Name = 'Test Opportunity ' + i,
+				StageName = 'Prospecting',
+				CloseDate = Date.today(),
+				AccountId = acc.Id
+			);
+			insert opp;
+		}
+
+		List<Opportunity> opps = [SELECT Id, Name, Type FROM Opportunity WHERE AccountId = :acc.Id];
+		System.assertEquals(numberOfOpps, opps.size(), 'Number of Opportunities created is incorrect.');
+		for (Opportunity opp : opps) {
+			System.assertEquals('New Customer', opp.Type, 'Opportunity ' + opp.Name + ' Type is incorrect.');
+		}
+	}
+
+	@IsTest
+	private static void testAnotherOpportunityTrigger_validateCloseOpportunity() {
+		Account acc = new Account(Name = 'Test Account');
+		insert acc;
+
+		List<Opportunity> oppsToInsert = new List<Opportunity>();
+		oppsToInsert.add(
+			new Opportunity(
+				Name = 'Open Opp',
+				StageName = 'Prospecting',
+				CloseDate = Date.today(),
+				AccountId = acc.Id,
+				Amount = 10000
+			)
+		);
+		oppsToInsert.add(
+			new Opportunity(
+				Name = 'Closed Won Opp',
+				StageName = 'Closed Won',
+				CloseDate = Date.today(),
+				AccountId = acc.Id,
+				Amount = 10000
+			)
+		);
+		oppsToInsert.add(
+			new Opportunity(
+				Name = 'Closed Lost Opp',
+				StageName = 'Closed Lost',
+				CloseDate = Date.today(),
+				AccountId = acc.Id,
+				Amount = 10000
+			)
+		);
+
+		insert oppsToInsert;
+
+		List<Opportunity> opps = [SELECT Id, Name, StageName FROM Opportunity WHERE AccountId = :acc.Id];
+		System.assertEquals(3, opps.size(), 'Number of Opportunities created is incorrect.');
+		for (Opportunity opp : opps) {
+			try {
+				delete opp;
+				if (opp.Name != 'Open Opp') {
+					System.assert(false, 'Exception should have been thrown.');
+				}
+			} catch (Exception e) {
+				if (opp.Name != 'Open Opp') {
+					System.assert(
+						e.getMessage().contains('Cannot delete closed opportunity'),
+						'Exception message is incorrect.' + e.getMessage()
+					);
+				}
+			}
+		}
+	}
+
+	@IsTest
+	private static void testAnotherOpportunityTrigger_insertTask() {
+		Account acc = new Account(Name = 'Test Account');
+		insert acc;
+
+		List<Opportunity> oppsToInsert = new List<Opportunity>();
+		Integer numberOfOpps = 200;
+		for (Integer i = 0; i < numberOfOpps; i++) {
+			Opportunity opp = new Opportunity(
+				Name = 'Test Opportunity ' + i,
+				StageName = 'Prospecting',
+				CloseDate = Date.today(),
+				AccountId = acc.Id
+			);
+			oppsToInsert.add(opp);
+		}
+
+		insert oppsToInsert;
+
+		List<Task> tasks = [SELECT Id, Subject, WhatId FROM Task WHERE WhatId IN :oppsToInsert];
+		System.assertEquals(numberOfOpps, tasks.size(), 'Number of Tasks created is incorrect.');
+	}
+
+	@IsTest
+	private static void testAnotherOpportunityTrigger_updateDescriptionFromStage() {
+		Account acc = new Account(Name = 'Test Account');
+		insert acc;
+
+		List<Opportunity> opps = new List<Opportunity>();
+		Integer numberOfOpps = 10;
+		for (Integer i = 0; i < numberOfOpps; i++) {
+			Opportunity opp = new Opportunity(
+				Name = 'Test Opportunity ' + i,
+				StageName = 'Prospecting',
+				CloseDate = Date.today(),
+				AccountId = acc.Id
+			);
+			opps.add(opp);
+		}
+		insert opps;
+
+		for (Opportunity opp : opps) {
+			opp.StageName = 'Qualification';
+		}
+		update opps;
+
+		List<Opportunity> updatedOpps = [SELECT Id, Description FROM Opportunity WHERE Id IN :opps];
+		System.assertEquals(numberOfOpps, updatedOpps.size(), 'Number of Opportunities updated is incorrect.');
+		for (Opportunity opp : updatedOpps) {
+			System.assert(
+				opp.Description.contains('Stage Change:Qualification'),
+				'Opportunity Description is incorrect: ' + opp.Description
+			);
+		}
+	}
+
+	@IsTest
+	private static void testAnotherOpportunityTrigger_notifyOwnersOpportunityDeleted() {
+		Account acc = new Account(Name = 'Test Account');
+		insert acc;
+
+		List<Opportunity> oppsToInsert = new List<Opportunity>();
+		Integer numberOfOpps = 200;
+		for (Integer i = 0; i < numberOfOpps; i++) {
+			Opportunity opp = new Opportunity(
+				Name = 'Test Opportunity ' + i,
+				StageName = 'Prospecting',
+				CloseDate = Date.today(),
+				AccountId = acc.Id
+			);
+			oppsToInsert.add(opp);
+		}
+
+		insert oppsToInsert;
+
+		delete oppsToInsert;
+		List<Opportunity> opps = [SELECT Id, Name FROM Opportunity WHERE AccountId = :acc.Id];
+		System.assertEquals(0, opps.size(), 'Number of Opportunities created is incorrect.');
+	}
+
+	@IsTest
+	private static void testAnotherOpportunityTrigger_assignPrimaryContact() {
+		Account acc = new Account(Name = 'Test Account');
+		insert acc;
+
+		Contact primaryContact = new Contact(FirstName = 'Primary', LastName = 'Contact', AccountId = acc.Id);
+
+		insert primaryContact;
+
+		Contact notPrimaryContact = new Contact(
+			FirstName = 'Not Primary',
+			LastName = 'Contact',
+			AccountId = acc.Id,
+			Title = 'VP Sales'
+		);
+
+		insert notPrimaryContact;
+
+		List<Opportunity> oppsToInsert = new List<Opportunity>();
+		Integer numberOfOpps = 200;
+		for (Integer i = 0; i < numberOfOpps; i++) {
+			Opportunity opp = new Opportunity(
+				Name = 'Test Opportunity ' + i,
+				StageName = 'Prospecting',
+				CloseDate = Date.today(),
+				AccountId = acc.Id,
+				Primary_Contact__c = primaryContact.Id
+			);
+			oppsToInsert.add(opp);
+		}
+
+		insert oppsToInsert;
+
+		delete primaryContact;
+
+		delete oppsToInsert;
+
+		undelete oppsToInsert;
+
+		Test.startTest();
+		List<Opportunity> opps = [SELECT Id, Name, Primary_Contact__c FROM Opportunity WHERE AccountId = :acc.Id];
+		System.assertEquals(numberOfOpps, opps.size(), 'Number of Opportunities created is incorrect.');
+		List<Contact> contacts = [SELECT Id, Name FROM Contact WHERE Id = :primaryContact.Id];
+		System.assertEquals(0, contacts.size(), 'Primary Contact should not exist.');
+		List<Contact> moreContact = [SELECT Id, Name FROM Contact];
+		for (Opportunity opp : opps) {
+			System.assertEquals(
+				notPrimaryContact.Id,
+				opp.Primary_Contact__c,
+				'Opportunity Primary Contact is incorrect: ' + opp.Primary_Contact__c
+			);
+		}
+		Test.stopTest();
+	}
 }
