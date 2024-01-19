@@ -29,19 +29,13 @@ trigger AnotherOpportunityTrigger on Opportunity(
 ) {
 	if (Trigger.isBefore) {
 		if (Trigger.isInsert) {
-			for (Opportunity opp : Trigger.new) {
-				if (opp.Type == null) {
-					opp.Type = 'New Customer';
-				}
-			}
-		} else if (Trigger.isUpdate) {
-			for (Opportunity opp : Trigger.new) {
-				Opportunity oldOpp = Trigger.oldMap.get(opp.Id);
-				if (opp.StageName != oldOpp.StageName && opp.Id == oldOpp.Id) {
-					opp.Description += '\n Stage Change:' + opp.StageName + ':' + DateTime.now().format();
-				}
+			// Set default Type for new Opportunities
+			Opportunity opp = Trigger.new[0];
+			if (opp.Type == null) {
+				opp.Type = 'New Customer';
 			}
 		} else if (Trigger.isDelete) {
+			// Prevent deletion of closed Opportunities
 			for (Opportunity oldOpp : Trigger.old) {
 				if (oldOpp.IsClosed) {
 					oldOpp.addError('Cannot delete closed opportunity');
@@ -50,33 +44,49 @@ trigger AnotherOpportunityTrigger on Opportunity(
 		}
 	}
 
-	List<Task> tasks = new List<Task>();
 	if (Trigger.isAfter) {
 		if (Trigger.isInsert) {
+			// Create a new Task for newly inserted Opportunities
 			for (Opportunity opp : Trigger.new) {
-				Task t = new Task();
-				t.Subject = 'Call Primary Contact';
-				t.WhatId = opp.Id;
-				t.WhoId = opp.Primary_Contact__c;
-				t.OwnerId = opp.OwnerId;
-				t.ActivityDate = Date.today().addDays(3);
-				tasks.add(t);
+				Task tsk = new Task();
+				tsk.Subject = 'Call Primary Contact';
+				tsk.WhatId = opp.Id;
+				tsk.WhoId = opp.Primary_Contact__c;
+				tsk.OwnerId = opp.OwnerId;
+				tsk.ActivityDate = Date.today().addDays(3);
+				insert tsk;
 			}
-		} else if (Trigger.isDelete) {
+		} else if (Trigger.isUpdate) {
+			// Append Stage changes in Opportunity Description
+			for (Opportunity opp : Trigger.new) {
+				for (Opportunity oldOpp : Trigger.old) {
+					if (opp.Id == oldOpp.Id && opp.StageName != oldOpp.StageName) {
+						opp.Description += '\n Stage Change:' + opp.StageName + ':' + DateTime.now().format();
+					}
+				}
+			}
+			update Trigger.new;
+		}
+		// Send email notifications when an Opportunity is deleted
+		else if (Trigger.isDelete) {
 			notifyOwnersOpportunityDeleted(Trigger.old);
-		} else if (Trigger.isUndelete) {
+		}
+		// Assign the primary contact to undeleted Opportunities
+		else if (Trigger.isUndelete) {
 			assignPrimaryContact(Trigger.newMap);
 		}
-
-		insert tasks;
 	}
 
+	/*
+    notifyOwnersOpportunityDeleted:
+    - Sends an email notification to the owner of the Opportunity when it gets deleted.
+    - Uses Salesforce's Messaging.SingleEmailMessage to send the email.
+    */
 	private static void notifyOwnersOpportunityDeleted(List<Opportunity> opps) {
 		List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
-		Map<Id, User> userMap = new Map<Id, User>([SELECT Id, Email FROM User]);
 		for (Opportunity opp : opps) {
 			Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-			String[] toAddresses = new List<String>{ userMap.get(opp.OwnerId).Email };
+			String[] toAddresses = new List<String>{ [SELECT Id, Email FROM User WHERE Id = :opp.OwnerId].Email };
 			mail.setToAddresses(toAddresses);
 			mail.setSubject('Opportunity Deleted : ' + opp.Name);
 			mail.setPlainTextBody('Your Opportunity: ' + opp.Name + ' has been deleted.');
@@ -90,30 +100,26 @@ trigger AnotherOpportunityTrigger on Opportunity(
 		}
 	}
 
+	/*
+    assignPrimaryContact:
+    - Assigns a primary contact with the title of 'VP Sales' to undeleted Opportunities.
+    - Only updates the Opportunities that don't already have a primary contact.
+    */
 	private static void assignPrimaryContact(Map<Id, Opportunity> oppNewMap) {
-		// get map of set of all opportunity account ids
-		Set<Id> oppAccountIds = new Set<Id>();
-		for (Opportunity opp : oppNewMap.values()) {
-			oppAccountIds.add(opp.AccountId);
-		}
-
-		Map<Id, Account> accMap = new Map<Id, Account>(
-			[
-				SELECT Id, Name, (SELECT Id FROM Contacts WHERE Title = 'VP Sales')
-				FROM Account
-				WHERE Id IN :oppAccountIds
-			]
-		);
-
 		Map<Id, Opportunity> oppMap = new Map<Id, Opportunity>();
 		for (Opportunity opp : oppNewMap.values()) {
-			if (opp.Primary_Contact__c == null && !accMap.get(opp.AccountId).Contacts.isEmpty()) {
+			Contact primaryContact = [
+				SELECT Id, AccountId
+				FROM Contact
+				WHERE Title = 'VP Sales' AND AccountId = :opp.AccountId
+				LIMIT 1
+			];
+			if (opp.Primary_Contact__c == null) {
 				Opportunity oppToUpdate = new Opportunity(Id = opp.Id);
-				oppToUpdate.Primary_Contact__c = accMap.get(opp.AccountId).Contacts[0].Id;
+				oppToUpdate.Primary_Contact__c = primaryContact.Id;
 				oppMap.put(opp.Id, oppToUpdate);
 			}
 		}
-
 		update oppMap.values();
 	}
 }
