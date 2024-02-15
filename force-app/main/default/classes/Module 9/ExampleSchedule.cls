@@ -2,15 +2,14 @@
  * Implementing the Schedulable Interface
  * Execute the ExampleBatch class using the Schedulable interface.
  */
-global with sharing class ExampleSchedule implements Schedulable {
-	global void execute(SchedulableContext sc) {
-		// Create an instance of the 'ExampleBatch' class.
-		// The 'ExampleBatch' class is a separate class that processes records in batches,
-		// which is useful for processing large numbers of records without hitting governor limits.
-		ExampleBatch batch = new ExampleBatch();
-
-		// Use the 'Database.executeBatch' method to start the batch job.
-		// This tells Salesforce to start processing the records using the logic defined in the 'ExampleBatch' class.
-		Database.executeBatch(batch);
-	}
+public with sharing class ExampleSchedule {
+	/*
+	 * Update/Uncomment the template code to create a method
+	 * Method to execute the schedule job job
+	 * Code to execute the batch job should not need to change other than uncommenting the code
+	 */
+	//[public | private ] [static] data_type execute (input parameters) {
+	//NextStepBatch batch = new NextStepBatch();
+	//Database.executeBatch(batch);
+	//}
 }

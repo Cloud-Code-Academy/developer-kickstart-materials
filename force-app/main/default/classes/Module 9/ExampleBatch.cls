@@ -4,12 +4,11 @@
  * Send an email to all active users
  */
 
-public with sharing class ExampleBatch implements Database.Batchable<sObject> {
+public with sharing class ExampleBatch {
 	// The 'start' method is executed at the beginning of the batch Apex job.
 	// It returns a 'Database.QueryLocator' object which the platform uses to identify the records to process.
 	public Database.QueryLocator start(Database.BatchableContext BC) {
 		// Here we're querying all the 'Account' records, specifically their Id, Name, and the custom field 'Description'.
-		return Database.getQueryLocator([SELECT Id, Name, Description FROM Account]);
 	}
 
 	// The 'execute' method processes the records retrieved by the 'start' method.
@@ -20,19 +19,14 @@ public with sharing class ExampleBatch implements Database.Batchable<sObject> {
 
 		// A set to store the Ids of the Account records being processed.
 		// A set is a collection that doesn't allow duplicate values.
-		Set<Id> accountIds = new Set<Id>();
 
 		// Loop through each Account in the current batch.
-		for (Account a : scope) {
-			// Update the 'Description' field of the Account.
-			a.Description = description;
 
-			// Add the Id of the Account to our set.
-			accountIds.add(a.Id);
-		}
+		// Update the 'Description' field of the Account.
+
+		// Add the Id of the Account to our set.
 
 		// Save the updated Account records back to Salesforce.
-		update scope;
 	}
 
 	// The 'finish' method is called after all batches are processed.
@@ -44,16 +38,12 @@ public with sharing class ExampleBatch implements Database.Batchable<sObject> {
 		Set<String> emails = new Set<String>();
 
 		// Loop through each user.
-		for (User u : users) {
-			// Add each user's email address to our set.
-			emails.add(u.Email);
-		}
+
+		// Add each user's email address to our set.
 
 		// Check if we have any email addresses.
-		if (!emails.isEmpty()) {
-			// If we do, call the 'sendEmail' method to send them a notification.
-			sendEmailToActiveUsers(emails);
-		}
+
+		// If we do, call the 'sendEmail' method to send them a notification.
 	}
 
 	// This private helper method sends an email to the provided set of email addresses.

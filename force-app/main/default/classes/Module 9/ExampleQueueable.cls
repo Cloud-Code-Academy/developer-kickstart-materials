@@ -3,7 +3,7 @@
  * This example processes up to 10 Account records where the Description field is not empty.
  * It then removes the Description from the Account records and updates them.
  */
-public with sharing class ExampleQueueable implements Queueable {
+public with sharing class ExampleQueueable {
 	// Declare a private variable to store a collection of Account records.
 	// The 'Map' is a collection that holds key-value pairs. In this case, the key is the Account ID and the value is the Account record.
 	private Map<Id, Account> accounts;
@@ -11,51 +11,37 @@ public with sharing class ExampleQueueable implements Queueable {
 	// This is the constructor for the NextStepQueueable class.
 	// It initializes the class with a Map of Account records.
 	public ExampleQueueable(Map<Id, Account> accounts) {
-		// The 'this' keyword refers to the current instance of the class.
-		// We're assigning the 'accounts' parameter to the class's 'accounts' variable.
-		this.accounts = accounts;
 	}
 
 	// This static method queues a job to run the execute method of this class.
 	public static void enqueueJob() {
-		// Query up to 10 Account records where the Description field is not empty.
+		// Create a new Map to store the Account records we want to process.
 		Map<Id, Account> accountMap = new Map<Id, Account>();
 
-		for (Account acc : [SELECT Id, Description FROM Account]) {
-			if (!String.isEmpty(acc.Description)) {
-				accountMap.put(acc.Id, acc);
-
-				if (accountMap.size() == 10) {
-					break;
-				}
-			}
-		}
-		System.debug('accountMap: ' + accountMap);
+		// Query for all Account records
+		// Add the Account records to the map if the Description field is not empty.
+		// Stop adding records to the map once we have 10.
 
 		// Check if we retrieved any Account records.
-		if (!accountMap.isEmpty()) {
-			// If we have records, enqueue a new job to process them asynchronously.
-			System.enqueueJob(new ExampleQueueable(accountMap));
-		}
+		// If we have records, enqueue a new job to process them asynchronously.
 	}
 
-	// This method is required by the 'Queueable' interface.
-	// It contains the logic that will run when the queued job is executed.
-	public void execute(QueueableContext context) {
-		// Loop over each Account in our map.
-		for (Account acc : accounts.values()) {
-			// Call the helper method to remove the description (Description) from the Account.
-			removeNextStep(acc);
-		}
+	/*
+	 * Update/Uncomment the template code to create a method
+	 * Method to execute the queueable job
+	 */
+	//[public | private ] [static] data_type execute (input parameters) {
+	// Get the accounts from the member variable
 
-		// Save the changes to the Account records back to Salesforce.
-		update accounts.values();
+	// Remove the Description using the helper method
 
-		// Call the static method to queue another job to process more Account records.
-		enqueueJob();
-	}
+	// Update the accounts
+
+	// Call the enqueueJob method to queue another job to process more records.
+	//}
+
 	// Helper method to remove the Description from an Account.
 	private static void removeNextStep(Account acc) {
-		acc.Description = null; // Set the Description field to 'null', effectively clearing it.
+		//Implement code to remove the Description from the Account record.
 	}
 }
