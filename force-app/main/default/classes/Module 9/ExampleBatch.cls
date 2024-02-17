@@ -1,6 +1,6 @@
 /*
  * Implementing the 'Database.Batchable' interface allows you to define a job that can be broken into smaller batches.
- * Update all Account records to have the same description 'Batching the next meetings together.''
+ * Update all Account records to have the same description 'Batching the next meetings together.'
  * Send an email to all active users
  */
 
