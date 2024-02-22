@@ -1,4 +1,4 @@
-public with sharing class ExampleRESTCalloutMockGenerator {
+public with sharing class ExampleRESTCalloutMockGenerator implements HttpCalloutMock {
 	public HTTPResponse respond(HTTPRequest req) {
 		// Create a fake response
 		HttpResponse res = new HttpResponse();
