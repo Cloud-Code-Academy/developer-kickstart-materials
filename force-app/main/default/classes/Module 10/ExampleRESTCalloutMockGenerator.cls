@@ -1,4 +1,4 @@
-public with sharing class ExampleRESTCalloutMockGenerator implements HttpCalloutMock{
+public with sharing class ExampleRESTCalloutMockGenerator implements HttpCalloutMock {
 	public HTTPResponse respond(HTTPRequest req) {
 		// Create a fake response
 		HttpResponse res = new HttpResponse();
@@ -11,7 +11,7 @@ public with sharing class ExampleRESTCalloutMockGenerator implements HttpCallout
 		} else {
 			// Return the dummy user details for the GET request
 			res.setBody(
-				'{"email": "test@example.com", "phone": "+123456789", "birthDate": "1990-01-01", "address": {"address": "123 Test St", "city": "Test City", "postalCode": "12345", "state": "TS", "country": "Testland"}}'
+				'{"firstName":"Johnny","lastName":"Test", "email": "test@example.com", "phone": "+123456789", "birthDate": "1990-01-01", "address": {"address": "123 Test St", "city": "Test City", "postalCode": "12345", "state": "TS", "country": "Testland"}}'
 			);
 		}
 		res.setStatusCode(200);
