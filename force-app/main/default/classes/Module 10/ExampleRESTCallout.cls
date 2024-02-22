@@ -7,7 +7,7 @@ public with sharing class ExampleRESTCallout {
 	 * @param dummyUserId The ID of the user in the external system to fetch data for.
 	 */
 
-	public static String getDummyJSONUserFromId(String dummyUserId) {
+	public static String getUserFromId(String dummyUserId) {
 		// Create HTTP request to send.
 
 		// Set the endpoint URL. Use direct URL or for best practices use Named Credential.
@@ -29,7 +29,7 @@ public with sharing class ExampleRESTCallout {
 	 * @param contactId The Salesforce Contact ID used to generate the JSON payload for the external system.
 	 */
 
-	public static String postCreateDummyJSONUser(String contactId) {
+	public static String postAddUser() {
 		// Create HTTP request to send.
 
 		// Set the endpoint URL. Use direct URL or for best practices use Named Credential.
