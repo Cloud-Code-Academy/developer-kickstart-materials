@@ -14,7 +14,7 @@ public with sharing class ExampleRESTCallout {
 		// Set the endpoint URL. Use direct URL or for best practices use Named Credential.
 		request.setEndpoint('https://dummyjson.com/users' + '/' + dummyUserId);
 		// request.setHeader('Authorization', 'Token token');
-		// request.setEndpoint('callout:DummyJsonUser' + '/' + dummyUserId);
+		// request.setEndpoint('callout:DummyJSON' + '/' + dummyUserId);
 
 		// Set the HTTP method to GET.
 		request.setMethod('GET');
