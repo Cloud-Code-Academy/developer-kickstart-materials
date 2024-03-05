@@ -1,0 +1,62 @@
+name: Run Apex Module 1 Unit Tests New
+
+# Definition when the workflow should run
+on:
+  # The workflow will run whenever an event happens on a pull request
+  workflow_call:
+  
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Install sfdx with npm
+      run: |
+        npm i @salesforce/cli --global
+
+    - name: Authenticate Dev Hub
+      run: |
+        echo ${{ secrets.CCA_AUTH_URL }} > sfdx_auth
+        sfdx force:auth:sfdxurl:store -f sfdx_auth -d -a DevHub
+
+    - name: Display Dev Hub Limits
+      run: |
+        sfdx force:limits:api:display -u DevHub
+
+    - name: Create Scratch Org
+      id : create-scratch-org
+      run: |
+        sf org create scratch --duration-days 1 --alias CI_ScratchOrg --definition-file config/project-scratch-def.json
+
+    - name: Deploy classes to org
+      run: |
+        sf project deploy start --target-org CI_ScratchOrg
+    # sf force source deploy -p force-app/main/default/classes/ -o CI_ScratchOrg
+
+    - name: Run Apex Unit Tests
+      run: |
+        sf apex test run -r human -c --wait 10 --target-org CI_ScratchOrg
+
+    # Install SFDX scanner
+   # - name: 'Installing SFDX scanner'
+   #   run: sf plugins install @salesforce/sfdx-scanner
+
+#    - name: 'Scan code'
+#      run: |
+#        cd codescan
+#        sf scanner run --format sarif --target '../force-app' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'
+#        cd ..  
+
+    # Now we upload the .sarif file as explained in the previous step
+#    - name: Upload SARIF file
+#      uses: github/codeql-action/upload-sarif@v3
+#      with:
+#        sarif_file: codescan/apexScanResults.sarif
+
+    - name: Delete Scratch Org
+      if: always()
+      run: |
+        sf org delete scratch --target-org CI_ScratchOrg --no-prompt
