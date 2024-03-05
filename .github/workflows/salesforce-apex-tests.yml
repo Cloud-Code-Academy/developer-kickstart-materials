@@ -19,7 +19,7 @@ jobs:
 
     - name: Authenticate Dev Hub
       run: |
-        echo ${{ secrets.CCA_REPO_SECRET }} > sfdx_auth
+        echo ${{ secrets.CCA_AUTH_URL }} > sfdx_auth
         sfdx force:auth:sfdxurl:store -f sfdx_auth -d -a DevHub
 
     - name: Display Dev Hub Limits
