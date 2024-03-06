@@ -4,4 +4,4 @@
 
 # for all files in the repository but only when changes are proposed in the feedback branch.
 
--   feedback @Cloud-Code-Academy/instructors
+* feedback @Cloud-Code-Academy/instructors
