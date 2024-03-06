@@ -1,4 +1,4 @@
 # Add 'AnyChange' label to any changes within the entire repository
-AnyChange:
+needs-review:
 - changed-files:
   - any-glob-to-any-file: '**'
