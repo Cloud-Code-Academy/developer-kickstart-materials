@@ -1,1 +1,7 @@
-@Cloud-Code-Academy/instructors
+# This is an example of a CODEOWNERS file
+
+# The following line specifies @Cloud-Code-Academy/instructors as the code owner
+
+# for all files in the repository but only when changes are proposed in the feedback branch.
+
+-   feedback @Cloud-Code-Academy/instructors
