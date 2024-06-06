@@ -16,6 +16,10 @@ jobs:
               run: |
                   npm i @salesforce/cli --global
 
+            - name: Scan code
+              run: |
+                  sf scanner run --format sarif --target 'force-app/' --category "Design,Best Practices,Performance,Code Style,Error Prone" --outfile 'apexScanResults.sarif'
+
             - name: Authenticate Dev Hub
               run: |
                   echo ${{ secrets.CCA_AUTH_URL }} > sfdx_auth
@@ -38,11 +42,8 @@ jobs:
               run: |
                   sf apex test run -r human -c --wait 10 --target-org CI_ScratchOrg
 
-            - name: Scan code
-              run: |
-                  sf scanner run --format sarif --target 'force-app/' --category "Design,Best Practices,Performance,Code Style,Error Prone" --outfile 'apexScanResults.sarif'
-
             - name: Upload SARIF file
+              if: always()
               uses: github/codeql-action/upload-sarif@v3
               with:
                   sarif_file: apexScanResults.sarif
