@@ -2,61 +2,52 @@ name: Run Apex Module 1 Unit Tests New
 
 # Definition when the workflow should run
 on:
-  # The workflow will run whenever an event happens on a pull request
-  workflow_call:
-  
+    # The workflow will run whenever an event happens on a pull request
+    workflow_call:
+
 jobs:
-  test:
-    runs-on: ubuntu-latest
+    test:
+        runs-on: ubuntu-latest
 
-    steps:
+        steps:
+            - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
+            - name: Install sfdx with npm
+              run: |
+                  npm i @salesforce/cli --global
 
-    - name: Install sfdx with npm
-      run: |
-        npm i @salesforce/cli --global
+            - name: Authenticate Dev Hub
+              run: |
+                  echo ${{ secrets.CCA_AUTH_URL }} > sfdx_auth
+                  sfdx force:auth:sfdxurl:store -f sfdx_auth -d -a DevHub
 
-    - name: Authenticate Dev Hub
-      run: |
-        echo ${{ secrets.CCA_AUTH_URL }} > sfdx_auth
-        sfdx force:auth:sfdxurl:store -f sfdx_auth -d -a DevHub
+            - name: Display Dev Hub Limits
+              run: |
+                  sfdx force:limits:api:display -u DevHub
 
-    - name: Display Dev Hub Limits
-      run: |
-        sfdx force:limits:api:display -u DevHub
+            - name: Create Scratch Org
+              id: create-scratch-org
+              run: |
+                  sf org create scratch --duration-days 1 --alias CI_ScratchOrg --definition-file config/project-scratch-def.json
 
-    - name: Create Scratch Org
-      id : create-scratch-org
-      run: |
-        sf org create scratch --duration-days 1 --alias CI_ScratchOrg --definition-file config/project-scratch-def.json
+            - name: Deploy classes to org
+              run: |
+                  sf project deploy start --target-org CI_ScratchOrg
 
-    - name: Deploy classes to org
-      run: |
-        sf project deploy start --target-org CI_ScratchOrg
-    # sf force source deploy -p force-app/main/default/classes/ -o CI_ScratchOrg
+            - name: Run Apex Unit Tests
+              run: |
+                  sf apex test run -r human -c --wait 10 --target-org CI_ScratchOrg
 
-    - name: Run Apex Unit Tests
-      run: |
-        sf apex test run -r human -c --wait 10 --target-org CI_ScratchOrg
+            - name: Scan code
+              run: |
+                  sf scanner run --format sarif --target 'force-app/' --category "Design,Best Practices,Performance,Code Style,Error Prone" --outfile 'apexScanResults.sarif'
 
-    # Install SFDX scanner
-   # - name: 'Installing SFDX scanner'
-   #   run: sf plugins install @salesforce/sfdx-scanner
+            - name: Upload SARIF file
+              uses: github/codeql-action/upload-sarif@v3
+              with:
+                  sarif_file: apexScanResults.sarif
 
-#    - name: 'Scan code'
-#      run: |
-#        cd codescan
-#        sf scanner run --format sarif --target '../force-app' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'
-#        cd ..  
-
-    # Now we upload the .sarif file as explained in the previous step
-#    - name: Upload SARIF file
-#      uses: github/codeql-action/upload-sarif@v3
-#      with:
-#        sarif_file: codescan/apexScanResults.sarif
-
-    - name: Delete Scratch Org
-      if: always()
-      run: |
-        sf org delete scratch --target-org CI_ScratchOrg --no-prompt
+            - name: Delete Scratch Org
+              if: always()
+              run: |
+                  sf org delete scratch --target-org CI_ScratchOrg --no-prompt
