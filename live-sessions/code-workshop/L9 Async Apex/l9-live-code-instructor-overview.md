@@ -217,3 +217,11 @@ public class SimpleScheduledJob implements Schedulable {
     -   Understanding governor limits is crucial for effective implementation
     -   Error handling is more complex with asynchronous processes
     -   Testing asynchronous code requires specific approaches
+
+### Copyright
+
+Copyright © 2023-2025 Cloud Code Academy, Inc. All rights reserved.
+
+This material is proprietary and confidential. Unauthorized use, reproduction, distribution, or modification of this material is strictly prohibited. This material is intended for educational purposes only and may not be shared, distributed, or used for commercial activities without express written permission.
+
+For licensing inquiries or permissions, contact: admin@cloudcodeacademy.com
