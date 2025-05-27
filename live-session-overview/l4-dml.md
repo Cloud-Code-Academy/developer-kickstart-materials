@@ -1,7 +1,3 @@
-Based on both transcripts and your updated instructions, here is the **final revised Lesson 4 Instructor Guide**. This version is **strictly focused on DML**, **excludes any async concepts** (like `@future`), and incorporates DML-related teaching moments from both caption files.
-
----
-
 # Lesson 4 Instructor Guide: Working with DML in Apex
 
 ## Lesson Summary
