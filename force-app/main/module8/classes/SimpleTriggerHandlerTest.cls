@@ -127,11 +127,11 @@ public class SimpleTriggerHandlerTest {
         update testContact;
         Test.stopTest();
         
-        // Then: Email change should be tracked
-        Contact result = [SELECT Email_Last_Modified__c FROM Contact WHERE Id = :testContact.Id];
-        Assert.isNotNull(result.Email_Last_Modified__c, 'Email modification date should be set');
-        Assert.areEqual(System.today(), result.Email_Last_Modified__c.date(), 
-                       'Email modification date should be today');
+        // Then: Email change should be tracked in description
+        Contact result = [SELECT Description FROM Contact WHERE Id = :testContact.Id];
+        Assert.isNotNull(result.Description, 'Description should be set when email changes');
+        Assert.isTrue(result.Description.contains('Email changed'), 
+                     'Description should indicate email was changed');
     }
     
     /**
@@ -198,12 +198,12 @@ public class SimpleTriggerHandlerTest {
      */
     @isTest
     static void testBeforeUpdate_VIPValidation() {
-        // Given: A VIP contact
+        // Given: A VIP contact (using Title to indicate VIP status)
         Contact vipContact = new Contact(
             FirstName = 'VIP',
             LastName = 'Customer',
             Email = 'vip@example.com',
-            VIP__c = true
+            Title = 'VIP Customer'
         );
         insert vipContact;
         

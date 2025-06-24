@@ -105,9 +105,9 @@ public with sharing class AccountTriggerHandler extends TriggerFramework {
                 acc.Industry = 'Other';
             }
             
-            // Set creation date custom field
-            if (acc.Account_Created_Date__c == null) {
-                acc.Account_Created_Date__c = System.today();
+            // Set description with creation date
+            if (String.isBlank(acc.Description)) {
+                acc.Description = 'Account created on ' + System.today();
             }
         }
     }
@@ -153,15 +153,16 @@ public with sharing class AccountTriggerHandler extends TriggerFramework {
         for (Account acc : newAccounts) {
             Account oldAccount = oldAccountMap.get(acc.Id);
             
-            // Track rating changes
+            // Track rating changes in description
             if (acc.Rating != oldAccount.Rating) {
-                acc.Rating_Last_Changed__c = System.now();
-                acc.Previous_Rating__c = oldAccount.Rating;
+                acc.Description = 'Rating changed from ' + oldAccount.Rating + ' to ' + acc.Rating + ' on ' + System.today();
             }
             
-            // Track ownership changes
+            // Track ownership changes in description
             if (acc.OwnerId != oldAccount.OwnerId) {
-                acc.Owner_Changed_Date__c = System.now();
+                if (String.isBlank(acc.Description)) {
+                    acc.Description = 'Owner changed on ' + System.today();
+                }
             }
         }
     }
@@ -178,9 +179,9 @@ public with sharing class AccountTriggerHandler extends TriggerFramework {
                 acc.addError('Cannot downgrade Customer accounts to Prospect');
             }
             
-            // Validate status transitions
-            if (oldAccount.Account_Status__c == 'Closed' && acc.Account_Status__c != 'Closed') {
-                acc.addError('Cannot reopen closed accounts');
+            // Validate type transitions
+            if (oldAccount.Type == 'Customer' && acc.Type != 'Customer') {
+                acc.addError('Cannot change type from Customer to another type');
             }
         }
     }
@@ -190,16 +191,16 @@ public with sharing class AccountTriggerHandler extends TriggerFramework {
      */
     private void updateDependentFields() {
         for (Account acc : newAccounts) {
-            // Update customer tier based on annual revenue
+            // Update rating based on annual revenue
             if (acc.AnnualRevenue != null) {
                 if (acc.AnnualRevenue >= 1000000) {
-                    acc.Customer_Tier__c = 'Platinum';
+                    acc.Rating = 'Hot';
                 } else if (acc.AnnualRevenue >= 500000) {
-                    acc.Customer_Tier__c = 'Gold';
+                    acc.Rating = 'Warm';
                 } else if (acc.AnnualRevenue >= 100000) {
-                    acc.Customer_Tier__c = 'Silver';
+                    acc.Rating = 'Cold';
                 } else {
-                    acc.Customer_Tier__c = 'Bronze';
+                    acc.Rating = null;
                 }
             }
         }
@@ -287,7 +288,7 @@ public with sharing class AccountTriggerHandler extends TriggerFramework {
                        MailingState, MailingPostalCode, MailingCountry
                 FROM Contact
                 WHERE AccountId IN :accountIds
-                AND Primary_Contact__c = true
+                LIMIT 1
             ];
             
             for (Contact con : contactsToUpdate) {
@@ -315,8 +316,8 @@ public with sharing class AccountTriggerHandler extends TriggerFramework {
         for (Account acc : newAccounts) {
             Account oldAccount = oldAccountMap.get(acc.Id);
             
-            // Create case when account becomes inactive
-            if (oldAccount.Active__c == 'Yes' && acc.Active__c == 'No') {
+            // Create case when account rating changes to Cold
+            if (oldAccount.Rating != 'Cold' && acc.Rating == 'Cold') {
                 Case inactiveCase = new Case(
                     Subject = 'Account Deactivated: ' + acc.Name,
                     AccountId = acc.Id,

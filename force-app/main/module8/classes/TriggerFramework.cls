@@ -137,11 +137,11 @@ public abstract class TriggerFramework {
     }
     
     /**
-     * Check if a handler is currently bypassed
+     * Check if a handler is currently bypassed (public version)
      * @param handlerName The name of the handler to check
      * @return True if bypassed, false otherwise
      */
-    public static Boolean isBypassed(String handlerName) {
+    public static Boolean isHandlerBypassed(String handlerName) {
         return bypassedHandlers.containsKey(handlerName) && bypassedHandlers.get(handlerName);
     }
     

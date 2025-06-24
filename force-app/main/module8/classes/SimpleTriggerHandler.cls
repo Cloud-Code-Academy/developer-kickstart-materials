@@ -115,12 +115,12 @@ public with sharing class SimpleTriggerHandler {
             Contact oldContact = oldContactMap.get(c.Id);
             
             if (c.Email != oldContact.Email) {
-                c.Email_Last_Modified__c = System.now();
+                c.Description = 'Email changed on ' + System.now();
                 System.debug('Email changed for contact: ' + c.Id);
             }
             
             if (c.Phone != oldContact.Phone) {
-                c.Phone_Last_Modified__c = System.now();
+                c.Description = 'Phone changed on ' + System.now();
                 System.debug('Phone changed for contact: ' + c.Id);
             }
         }
@@ -133,8 +133,8 @@ public with sharing class SimpleTriggerHandler {
         for (Contact c : newContacts) {
             Contact oldContact = oldContactMap.get(c.Id);
             
-            // Example: Prevent email changes for VIP contacts
-            if (c.VIP__c && c.Email != oldContact.Email) {
+            // Example: Prevent email changes for contacts with 'VIP' in title
+            if (String.isNotBlank(c.Title) && c.Title.containsIgnoreCase('VIP') && c.Email != oldContact.Email) {
                 c.addError('Cannot change email for VIP contacts');
             }
         }
