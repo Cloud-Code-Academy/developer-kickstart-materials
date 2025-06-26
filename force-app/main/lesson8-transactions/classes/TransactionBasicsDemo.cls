@@ -25,20 +25,32 @@ public class TransactionBasicsDemo {
             // Step 1: Create and insert an Account
             Account newAccount = new Account(
                 Name = 'Transaction Demo Account',
-                Type = 'Customer'
+                Type = 'Prospect'
             );
             insert newAccount;
             System.debug('Account inserted with ID: ' + newAccount.Id);
             
             // Step 2: Create and insert a Contact related to the Account
+            SimpleTriggerHandler.stopTrigger = false;
+            SimpleTriggerHandler myTrigger = new SimpleTriggerHandler();
+            myTrigger.triggerName = 'SimpleTriggerHandler => 1chon';
             Contact newContact = new Contact(
-                FirstName = 'John',
-                LastName = 'Doe',
+                FirstName = '1cohn',
+                LastName = '1coe',
                 AccountId = newAccount.Id,
-                Email = 'john.doe@example.com'
+                Email = '1cohn.Zoe@example.com'
             );
             insert newContact;
             System.debug('Contact inserted with ID: ' + newContact.Id);
+            SimpleTriggerHandler.stopTrigger = true;
+            myTrigger.triggerName = 'SimpleTriggerHandler => 1dohn';
+            newContact = new Contact(
+                FirstName = '1dohn',
+                LastName = '1doe',
+                AccountId = newAccount.Id,
+                Email = '1dohn.doe@example.com'
+            );
+            insert newContact;
             
             // Step 3: Create and insert an Opportunity
             Opportunity newOpportunity = new Opportunity(

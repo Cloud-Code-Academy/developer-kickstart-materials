@@ -62,20 +62,22 @@ public class AsyncApexTransactionDemo {
         System.debug('Created ' + accountsToProcess.size() + ' accounts to process');
         
         // Process accounts with limit checking
-        processAccountsWithLimitHandling(accountsToProcess);
+        processAccountsWithLimitHandling();
     }
     
     /**
      * @description Processes accounts and uses async Apex when approaching limits
      * @param accounts List of accounts to process
      */
-    private static void processAccountsWithLimitHandling(List<Account> accounts) {
+
+    @future
+    private static void processAccountsWithLimitHandling() {
         System.debug('Processing accounts with limit handling...');
         
         List<Contact> contactsToCreate = new List<Contact>();
         List<Account> remainingAccounts = new List<Account>();
         Integer processedCount = 0;
-        
+        List<Account> accounts = [SELECT Id FROM Account];
         for (Account acc : accounts) {
             // Check SOQL query limits
             if (Limits.getQueries() >= Limits.getLimitQueries() - 20) {

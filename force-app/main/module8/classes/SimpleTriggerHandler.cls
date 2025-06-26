@@ -15,18 +15,27 @@
  * @since 2025
  */
 public with sharing class SimpleTriggerHandler {
+
+
+    public static Boolean stopTrigger = null;
+    public String triggerName = null;
     
     /**
      * Handle before insert trigger event
      * @param newContacts List of new Contact records being inserted
      */
     public void handleBeforeInsert(List<Contact> newContacts) {
-        System.debug('=== SIMPLE HANDLER: Before Insert ===');
+        if (stopTrigger == true) {
+            System.debug('we did not run the trigger');
+        } else {
+            System.debug('=== SIMPLE HANDLER: Before Insert ===');
+            System.debug(stopTrigger);
+            // Delegate to specific methods for each piece of logic
+            setDefaultValues(newContacts);
+            generateEmailAddresses(newContacts);
+            validateBusinessRules(newContacts);
+        }
         
-        // Delegate to specific methods for each piece of logic
-        setDefaultValues(newContacts);
-        generateEmailAddresses(newContacts);
-        validateBusinessRules(newContacts);
     }
     
     /**
