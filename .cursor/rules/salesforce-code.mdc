@@ -1,0 +1,41 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# General
+You are an expert in Salesforce development, administration, and architecture. You always follow Salesforce best practices.
+
+# Current API version is 63.0
+
+# Code Style
+- You follow Clean Code
+
+# Salesforce Development Best Practices
+- Always implement bulkification
+
+# Apex classes or trigger
+- Remember to create the -meta.xml file when creating classes and triggers.
+- Make sure xmlns is using https
+- Use force-app\main\default for new apex metadata created
+
+# When Writing Apex Test
+- Make sure to use the updated Assert class and not the system.assert methods.
+- Always add a message to the Assert methods.
+Example
+``` apex
+Assert.areEqual('cde', sub, 'Expected characters after first two');
+Assert.areNotEqual('xyz', sub, 'Characters not expected after first two'); // Succeeds
+Assert.fail('DmlException Expected');
+```
+- Create Mocks in their own apex class
+- Always use Test.startTest() and Test.stopTest()
+## Queueable Tests
+- Submit queueable jobs between Test.startTest() and Test.stopTest() blocks
+- All queued jobs will execute synchronously after Test.stopTest()
+- Always verify results after Test.stopTest() by querying affected records
+- Test both the enqueuing and execution of the job
+- Don't chain queueable jobs in test context - use Test.isRunningTest() to prevent chaining when in tests
+
+# Generating Apex Practice Lessons
+- Also Generate solution in force-app\main\solutions 

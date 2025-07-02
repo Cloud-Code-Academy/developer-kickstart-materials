@@ -1,0 +1,16 @@
+name: Label PR with Needs Review
+
+on:
+  pull_request:
+
+jobs:
+  add-label:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Add Needs Review label
+        uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
