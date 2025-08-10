@@ -1,4 +1,4 @@
-# Lesson 8 Instructor Guide: Advanced Trigger Best Practices
+# Lesson 8 - Instructor Guide: Advanced Trigger Best Practices
 
 ## Lesson Summary
 

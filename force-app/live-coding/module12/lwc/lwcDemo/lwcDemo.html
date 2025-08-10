@@ -1,0 +1,41 @@
+<template>
+  <lightning-card title={computedTitle} icon-name="utility:trail">
+    <div class="slds-p-around_medium">
+      <!-- Platform-injected context when on a Record Page -->
+      <template if:true={recordId}>
+        <p class="meta">Record Id: <code>{recordId}</code></p>
+        <p class="meta">Object API Name: <code>{objectApiName}</code></p>
+
+        <!-- Object metadata via Lightning UI API -->
+        <template if:true={objectInfo.data}>
+          <p class="slds-m-bottom_small">Object Label: {objectLabel}</p>
+        </template>
+
+        <!-- All-in-one LDS form: switch between read-only and edit -->
+        <div class="slds-m-vertical_small">
+          <lightning-button-group>
+            <lightning-button label="View" onclick={switchToView} variant={viewVariant}></lightning-button>
+            <lightning-button label="Edit" onclick={switchToEdit} variant={editVariant}></lightning-button>
+          </lightning-button-group>
+        </div>
+
+        <lightning-record-form
+          record-id={recordId}
+          object-api-name={objectApiName}
+          layout-type={layoutType}
+          mode={formMode}
+          columns={columns}
+          density="compact"
+          onsubmit={handleSubmit}
+          onsuccess={handleSuccess}
+          onerror={handleError}>
+        </lightning-record-form>
+      </template>
+
+      <template if:false={recordId}>
+        <lightning-icon icon-name="utility:info" size="small" class="slds-m-right_x-small"></lightning-icon>
+        Place this component on a **Record Page** to see `recordId`/`objectApiName` and the record form.
+      </template>
+    </div>
+  </lightning-card>
+</template>
