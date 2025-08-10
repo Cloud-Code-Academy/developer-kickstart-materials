@@ -17,6 +17,12 @@ By the end of this session, students will be able to:
 -   Develop queueable Apex classes with job chaining
 -   Schedule Apex jobs using both code and the Salesforce UI
 
+**Files for Reference (do not copy/paste):**  
+- `force-app\live-coding\module9\classes\future.cls` – Contains the `ContactUtility` class with examples of `@future` methods for mixed DML and callouts.  
+- `force-app\live-coding\module9\classes\batch.cls` – Defines the `InactiveAccountProcessor` batch class that illustrates the `Database.Batchable` pattern, start/execute/finish methods, error handling and email notifications.  
+- `force-app\live-coding\module9\classes\queueable.cls` – Implements the `OpportunityTeamAssigner` queueable class to demonstrate job chaining and sequential processing.  
+- `force-app\live-coding\module9\classes\schedulable.cls` – Provides the `WeeklyInactiveAccountScheduler` schedulable class for scheduling batch jobs using cron expressions.  
+
 ### Session Outline (90 minutes)
 
 #### 1. Welcome and Introduction (5 minutes)

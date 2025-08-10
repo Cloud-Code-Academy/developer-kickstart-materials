@@ -13,6 +13,10 @@ By the end of this session, students will be able to:
 
 ## Lesson Outline (1h 30m Total)
 
+**Files for Reference (do not copy/paste):**  
+- `force-app\live-coding\module5\soqlDemo.apex` – Anonymous Apex script demonstrating basic SOQL queries and iteration over result sets used in this lesson.  
+- `force-app\live-coding\module5\classes\SoqlDemo.cls` – Supporting Apex class with methods to retrieve Accounts and Contacts for demonstration purposes.  
+
 ### 1. Welcome & Context (5 min)
 - Briefly recap previous lesson’s Apex basics.
 - Introduce today’s focus: **retrieving data from Salesforce with SOQL**.

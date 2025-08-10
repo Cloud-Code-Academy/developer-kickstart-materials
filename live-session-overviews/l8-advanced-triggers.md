@@ -6,6 +6,15 @@ This lesson moves students beyond basic trigger syntax to explore **how to write
 
 ---
 
+**Files for Reference (do not copy/paste):**  
+- `force-app\live-coding\module8\triggers\ContactTriggerBad.trigger` – Monolithic trigger demonstrating anti‑patterns such as logic in triggers, SOQL/DML in loops and lack of bulkification.  
+- `force-app\live-coding\module8\triggers\ContactTriggerSimple.trigger` – Thin trigger that routes to a handler class following the single‑responsibility pattern.  
+- `force-app\live-coding\module8\classes\TriggerAntiPatternDemo.cls` – Apex class used to discuss common trigger anti‑patterns.  
+- `force-app\live-coding\module8\classes\SimpleTriggerHandler.cls` – Basic trigger handler showing how to separate business logic from the trigger.  
+- `force-app\live-coding\module8\classes\TriggerFramework.cls` – Reusable trigger framework that provides a base class and recursion prevention.  
+- `force-app\live-coding\module8\classes\AccountTriggerHandler.cls` – Concrete handler class built on the framework used in demonstration of best practices.  
+- `force-app\live-coding\module8\classes\SimpleTriggerHandlerTest.cls` – Unit test class for the handler pattern that can be referenced when discussing testing strategies.  
+
 ## Learning Objectives
 
 By the end of this lesson, students will be able to:

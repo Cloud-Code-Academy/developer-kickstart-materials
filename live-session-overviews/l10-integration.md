@@ -18,6 +18,13 @@ By the end of this session, students will be able to:
 -   Set up remote site settings for external integrations
 -   Use mock callouts for testing integration code
 
+**Files for Reference (do not copy/paste):**  
+- `force-app\live-coding\module10\classes\SimpleRestEndpoint.cls` – Demonstrates how to expose REST endpoints from Salesforce using `@RestResource` along with `@HttpGet`, `@HttpPost` and `@HttpDelete` methods.  
+- `force-app\live-coding\module10\classes\SimpleExternalCallout.cls` – Shows how to perform HTTP callouts to an external API, including constructing `HttpRequest`, sending it with `Http`, and processing the `HttpResponse`.  
+- `force-app\live-coding\module10\classes\SimpleCalloutMock.cls` – An implementation of `HttpCalloutMock` used to simulate external responses in unit tests.  
+- `force-app\live-coding\module10\classes\IntegrationDemoHelper.cls` – Utility class containing helper methods, patterns, and debug techniques to support integration demos.  
+- `force-app\live-coding\module10\classes\SimpleIntegrationTest.cls` – Complete test class illustrating how to test REST endpoints and callouts using mock responses.  
+
 ### Session Outline (90 minutes)
 
 #### 1. Welcome and Integration Overview (10 minutes)

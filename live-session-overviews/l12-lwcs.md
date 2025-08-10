@@ -44,18 +44,27 @@ By the end of this session, students will be able to:
 ### 4. Live Demo – Creating a Basic LWC (25 min)
 
 **Files for Reference (do not copy/paste):**
-- `force-app\live-coding\module12\lwc\helloWorld\helloWorld.html`
-- `force-app\live-coding\module12\lwc\helloWorld\helloWorld.js`
-- `force-app\live-coding\module12\lwc\helloWorld\helloWorld.js-meta.xml`
+ - `force-app\live-coding\module12\lwc\lwcDemo\lwcDemo.html` – The primary LWC used in this lesson. It demonstrates working with a Lightning record form, reacting to design-time properties, and wiring object metadata via Lightning UI API.
+ - `force-app\live-coding\module12\lwc\lwcDemo\lwcDemo.js` – The JavaScript controller for `lwcDemo` showing how to expose properties, handle events, and derive computed values.
+ - `force-app\live-coding\module12\lwc\lwcDemo\lwcDemo.js-meta.xml` – The metadata file configuring visibility and targets for the `lwcDemo` component.
+ - Additional LWCs for optional exploration:
+   - `force-app\live-coding\module12\lwc\sayHello\\` – A simple component that greets the user and demonstrates reactive properties.
+   - `force-app\live-coding\module12\lwc\accountContacts\\` and `force-app\live-coding\module12\lwc\accountContactRow\\` – Components that display Accounts and their Contacts using an Apex controller.
+   - `force-app\live-coding\module12\lwc\nearbyCustomers\\` and `force-app\live-coding\module12\lwc\nearbyCustomersImproved\\` – Example components for mapping nearby customers using geolocation data.
+ - Apex controllers:
+   - `force-app\live-coding\module12\classes\AccountContactsController.cls` – Server-side controller that queries Accounts and Contacts for the `accountContacts` component.
+   - `force-app\live-coding\module12\classes\NearbyCustomerController.cls` – Server-side controller used by the `nearbyCustomers` components to fetch location data.
+
+> **Note:** The `lwcDemo` component is the main focus of this lesson. The other LWCs and Apex classes listed above are included for additional practice or to extend the lesson if time permits.
 
 **Step 1 – Create LWC**
 - **From VS Code:**
   1. Ctrl+Shift+P / Cmd+Shift+P → `SFDX: Create Lightning Web Component`.
-  2. Name: `helloWorld`.
+  2. Name: `lwcDemo`.
   3. Choose `force-app/main/default/lwc` as location.
 - **From Salesforce CLI:**
   ```bash
-  sfdx force:lightning:component:create --type lwc --componentname helloWorld --outputdir force-app/main/default/lwc
+  sfdx force:lightning:component:create --type lwc --componentname lwcDemo --outputdir force-app/main/default/lwc
   ```
 
 **Step 2 – Add HTML**
@@ -69,8 +78,8 @@ By the end of this session, students will be able to:
 ```javascript
 import { LightningElement, track } from 'lwc';
 
-export default class HelloWorld extends LightningElement {
-    @track name = 'Salesforce';
+export default class LwcDemo extends LightningElement {
+    name = 'Salesforce';
 }
 ```
 
@@ -92,7 +101,7 @@ export default class HelloWorld extends LightningElement {
 - Deploy to org: Right-click component folder → **SFDX: Deploy Source to Org**.
 - Add to Lightning App Builder page:
   1. In Salesforce, go to Setup → Lightning App Builder.
-  2. Open a page → Drag `helloWorld` onto the canvas → Save & Activate.
+  2. Open a page → Drag `lwcDemo` onto the canvas → Save & Activate.
 
 ---
 
@@ -101,7 +110,7 @@ export default class HelloWorld extends LightningElement {
 - Example:
 ```javascript
 import { LightningElement, api } from 'lwc';
-export default class HelloWorld extends LightningElement {
+export default class LwcDemo extends LightningElement {
     @api name;
 }
 ```

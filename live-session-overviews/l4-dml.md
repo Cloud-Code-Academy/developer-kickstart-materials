@@ -34,6 +34,10 @@ By the end of this session, students will be able to:
 Open **Developer Console** → **Debug → Open Execute Anonymous Window**.  
 This is where we’ll run today’s examples.
 
+**Files for Reference (do not copy/paste):**  
+- `force-app\live-coding\module4\dmldemo.apex` – Anonymous Apex script that orchestrates the sequence of DML operations demonstrated in this lesson.  
+- `force-app\live-coding\module4\classes\DmlDemo.cls` – Apex class containing the helper methods for each DML operation (insert, update, upsert, delete, undelete) used during the live coding.  
+
 ---
 
 ### 2. INSERT (10 min)

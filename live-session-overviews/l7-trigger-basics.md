@@ -68,6 +68,10 @@ By the end of this session, students will be able to:
 
 ---
 
+**Files for Reference (do not copy/paste):**  
+- `force-app\live-coding\module7\triggers\BasicAccountTrigger.trigger` – Example trigger implementing a simple **before insert** rule to set a default Account name. Use this as the starting point for the live demonstration.  
+- `force-app\live-coding\module7\classes\BasicAccountTriggerTest.cls` – Test class illustrating how to unit test trigger logic (optional for instructor reference).  
+
 ### 6. Live Demo – Creating a Trigger (25 min)
 **Purpose:** Show both Developer Console and VS Code workflows.
 

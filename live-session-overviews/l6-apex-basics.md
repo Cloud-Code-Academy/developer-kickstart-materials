@@ -13,6 +13,10 @@ By the end of this session, students will be able to:
 
 ## Lesson Outline (1h 30m Total)
 
+**Files for Reference (do not copy/paste):**  
+- `force-app\live-coding\module2\ExampleFlowControlLoopsCollections.cls` – Apex class containing examples of flow control statements, loops, and collection manipulation that instructors can draw upon during live demonstrations.  
+- `force-app\live-coding\module2\ExampleFlowControlLoopsCollectionsTest.cls` – Associated test class to illustrate how to verify the methods (useful for instructor review or deeper discussion).  
+
 ### 1. Welcome & Session Context (5 min)
 - Recap last lesson’s SOQL basics and using query results in Apex.
 - Introduce today’s focus: **variables, data types, and collections**.
