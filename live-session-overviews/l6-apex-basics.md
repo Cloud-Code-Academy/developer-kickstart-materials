@@ -1,149 +1,135 @@
-# Lesson 6 – Instructor Guide: Working with Variables, Data Types, and Collections in Apex
+# Lesson 6 – Instructor Guide: Git Branching & Collaboration + Troubleshooting & Debugging
+
+## Lesson Summary
+This session delivers an in-depth look at **Git branching and team collaboration on GitHub**, then reinforces a systematic approach to **troubleshooting and debugging** in Salesforce. Students will practice a feature-branch workflow, pull requests, and merge strategies aligned to the lecture slides, and then apply structured debugging tactics using logs and targeted experiments.The second half emphasizes narrowing scope, isolating causes, reading debug logs, and iterating fixes safely.  
+
+---
 
 ## Learning Objectives
 By the end of this session, students will be able to:
-- Declare and initialize variables using Apex syntax.
-- Understand and use **primitive data types** (`String`, `Integer`, `Decimal`, `Boolean`, `Date`).
-- Create and manipulate **collections** (`List`, `Set`, `Map`).
-- Understand collection initialization and iteration patterns.
-- Recognize when and why to use each type of collection in Apex.
-- Apply best practices for naming, readability, and debugging.
+
+- Follow a **feature-branch workflow** from clone → branch → commit → push → PR → QA → merge.
+- Write high-quality **commit messages** and open **pull requests** tied to a user story.
+- Compare **branching strategies** and choose an appropriate merge strategy (merge commit vs. squash vs. rebase) for the team. 
+- Diagnose issues using a structured **troubleshooting vs. debugging** approach.   
+- Configure and interpret **debug logs** with the correct **log levels**; iterate fixes safely.  
 
 ---
 
 ## Lesson Outline (1h 30m Total)
 
-**Files for Reference (do not copy/paste):**  
-- `force-app\live-coding\module2\ExampleFlowControlLoopsCollections.cls` – Apex class containing examples of flow control statements, loops, and collection manipulation that instructors can draw upon during live demonstrations.  
-- `force-app\live-coding\module2\ExampleFlowControlLoopsCollectionsTest.cls` – Associated test class to illustrate how to verify the methods (useful for instructor review or deeper discussion).  
+### Part A: Git Branching & Collaboration (60 min)
 
-### 1. Welcome & Session Context (5 min)
-- Recap last lesson’s SOQL basics and using query results in Apex.
-- Introduce today’s focus: **variables, data types, and collections**.
-- Explain why these are fundamental for data manipulation in Salesforce development.
+#### 1. Welcome & Context (5 min)
+- Why branching matters: **teamwork, code quality, accountability, feature management**; how Copilot fits in as assistive tooling.
 
 ---
 
-### 2. Variables & Assignment (10 min)
-- Explain **what variables are** and how they store data in memory.
-- Syntax:
-  ```apex
-  String companyName = 'Acme Corp';
-  Integer employeeCount = 250;
-  Decimal revenue = 1050000.50;
-  Boolean isActive = true;
-  Date today = Date.today();
-  ```
-- Discuss variable naming best practices (camelCase, descriptive names).
-- Show default values for uninitialized variables.
+#### 2. Feature-Branch Workflow (15 min)
+- From **main**: create a short-lived, descriptive feature branch → commit → push → PR → QA → merge.
+
+```bash
+# Create and switch to a feature branch from main
+git checkout -b feature/update-account-description
+
+# Stage & commit your changes
+git add .
+git commit -m "Update Account descriptions when missing"
+
+# Push the new branch to origin
+git push origin feature/update-account-description
+```
+
+- Tie commits/PRs to the **user story**:  
+  *Update Account Descriptions*  
+  - If `Description` is empty, set `<Industry> + ' Account'`.  
+  - If no `Industry`, set `'Missing Industry for Account'`.  
+  - Return updated list of Accounts.
 
 ---
 
-### 3. Primitive Data Types (10 min)
-- Detail the most common Apex primitive types:
-  - `String`
-  - `Integer`
-  - `Decimal`
-  - `Boolean`
-  - `Date`, `Datetime`, `Time`
-- Demonstrate type-specific operations:
-  ```apex
-  String greeting = 'Hello';
-  greeting += ', Salesforce!'; // Concatenation
-  
-  Integer x = 5;
-  Integer y = 3;
-  System.debug(x + y); // Arithmetic
-  ```
-- Common pitfall: mismatched data types (type casting errors).
+#### 3. Pull Requests & Code Review (10 min)
+- What to include: concise title, context, screenshots (when applicable), risk notes, and test steps.  
+- **QA approval** before merge (per slide flow).
+- Instructor tip: enforce branch protection + required reviews.
 
 ---
 
-### 4. Lists (15 min)
-- Explain that **Lists** are ordered collections that can contain duplicates.
-- Syntax examples:
-  ```apex
-  List<String> colors = new List<String>{'Red', 'Green', 'Blue'};
-  colors.add('Yellow');
-  System.debug(colors.size()); // Number of elements
-  ```
-- Accessing elements by index:
-  ```apex
-  System.debug(colors[0]); // 'Red'
-  ```
-- Iterating with a `for` loop:
-  ```apex
-  for (String color : colors) {
-      System.debug(color);
-  }
-  ```
+#### 4. Branching Strategies & Merge Options (10 min)
+- **Branching strategies:** lightweight feature branches (trunk-based), or longer-lived branches (GitFlow-style)—choose one, document it.  
+- **Merge strategies:**  
+  - **Squash & merge** for clean history,  
+  - **Merge commit** to preserve branch history,  
+  - **Rebase** (advanced) to linearize history.
 
 ---
 
-### 5. Sets (10 min)
-- Explain that **Sets** are unordered collections with no duplicates.
-- Example:
-  ```apex
-  Set<String> fruits = new Set<String>{'Apple', 'Banana', 'Apple'};
-  System.debug(fruits); // Apple appears only once
-  fruits.add('Orange');
-  ```
-- Use cases: ensuring uniqueness, quick membership checks.
+#### 5. Staying Up-to-date & Conflict Resolution (15 min)
+- Sync with main before opening/merging a PR:
+
+```bash
+# Update local tracking refs and rebase feature on latest main
+git fetch --all --prune
+git checkout feature/update-account-description
+git rebase origin/main
+
+# If conflicts appear:
+# 1) Edit files to resolve
+# 2) git add <resolved-file>
+git rebase --continue
+
+# As an alternative (if team prefers merges):
+git merge origin/main
+```
+
+- Inspect history and status quickly:
+
+```bash
+git status
+git log --oneline --graph --decorate -20
+```
 
 ---
 
-### 6. Maps (15 min)
-- Explain that **Maps** store key–value pairs for fast lookups.
-- Example:
-  ```apex
-  Map<String, String> countryCodes = new Map<String, String>{
-      'US' => 'United States',
-      'CA' => 'Canada'
-  };
-  System.debug(countryCodes.get('US')); // United States
-  ```
-- Iterating over keys:
-  ```apex
-  for (String code : countryCodes.keySet()) {
-      System.debug(code + ' => ' + countryCodes.get(code));
-  }
-  ```
-- Real-world Salesforce example: mapping `Id` to record.
+#### 6. Collaboration Extras (5 min)
+- Use **draft PRs** early, **CODEOWNERS** for routing reviews, and **Copilot** for diffs/tests but never as a substitute for understanding.
 
 ---
 
-### 7. Live Coding – Combining Collections with SOQL (15 min)
-- Write a SOQL query to retrieve Account names:
-  ```apex
-  List<Account> accs = [SELECT Id, Name FROM Account LIMIT 5];
-  ```
-- Store records in a `Map<Id, Account>`:
-  ```apex
-  Map<Id, Account> accMap = new Map<Id, Account>(accs);
-  ```
-- Iterate and debug:
-  ```apex
-  for (Id accId : accMap.keySet()) {
-      System.debug(accMap.get(accId).Name);
-  }
-  ```
+### Part B: Troubleshooting & Debugging (30 min)
+
+#### 1. Troubleshooting vs. Debugging (10 min)
+- **Troubleshooting:** reproduce, narrow scope, check config & permissions, inspect data/changes/logs.   
+- **Debugging:** compare *Expected vs Actual*, add targeted debugs, fix, **retest**, and keep changes small. 
 
 ---
 
-### 8. Best Practices & Common Pitfalls (5 min)
-- Use the right collection type for the job.
-- Initialize collections before adding to them.
-- Limit SOQL queries in loops to avoid governor limits.
+#### 2. Debug Log Levels & Usage (10 min)
+- Levels from **NONE → ERROR → WARN → INFO → DEBUG → FINE → FINER → FINEST**; choose the lowest verbosity that reveals the issue.   
+- Practical steps: enable logs, reproduce, scan events by category/level, iterate.
 
 ---
 
-### 9. Q&A & Wrap-Up (5 min)
-- Review key concepts: variables, data types, Lists, Sets, Maps.
-- Encourage practice by creating and manipulating collections in different ways.
+#### 3. Common Error Types & Safe Fix Loops (5 min)
+- **Syntax**, **Logic**, **Runtime**, and **Uncaught exceptions**; when and why to use `try/catch`.   
+- Avoid masking problems with overly broad catches; log meaningfully.
 
 ---
 
-## Copyright
+#### 4. Q&A & Wrap-Up (5 min)
+- Re-emphasize: branch early, PR often; debug with intention; **don’t change too much at once**. 
+
+---
+
+## Key Points for Instructors
+- Keep branch names **short and descriptive**; reference the ticket ID (e.g., `CC-123`).
+- Model the slide workflow end-to-end (clone → branch → commit → push → PR → QA).
+- Show at least one **conflict resolution** path (rebase or merge) live.  
+- Use **structured logs and minimal deltas** during debugging to isolate effects. 
+
+---
+
+### Copyright
 
 Copyright © 2023-2025 Cloud Code Academy, Inc. All rights reserved.
 
