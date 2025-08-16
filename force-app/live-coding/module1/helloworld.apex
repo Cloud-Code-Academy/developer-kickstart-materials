@@ -1,34 +1,51 @@
+// Run this in the Developer Console (Execute Anonymous Window)
 
-// ============================================================================
-// Lesson 1 Anonymous Apex (Super Basic + Class Call)
-// ============================================================================
+// Hello World in Apex
+System.debug('Hello, World!');
 
-// 1) Hello World direct
-System.debug('Hello, Apex!');
+// ---- Data Types ----
 
-// 2) Primitives / Core Types
-String course = 'Apex 101';
-Integer week = 1;
-Boolean isActive = true;
+// Integer
+Integer myInt = 42;
+System.debug('Integer: ' + myInt);
+
+// Decimal (for numbers with fractions)
+Decimal myDecimal = 3.14159;
+System.debug('Decimal: ' + myDecimal);
+
+// Boolean
+Boolean isLearning = true;
+System.debug('Boolean: ' + isLearning);
+
+// String
+String myString = 'Apex is fun!';
+System.debug('String: ' + myString);
+
+// Date
 Date today = Date.today();
+System.debug('Date: ' + today);
 
-System.debug('course=' + course + ', week=' + week);
-System.debug('today=' + today + ', isActive? ' + isActive);
+// Datetime
+Datetime now = Datetime.now();
+System.debug('Datetime: ' + now);
 
-// 3) Collections
-List<String> topics = new List<String>{ 'Variables', 'Types', 'Collections' };
-topics.add('Debug Logs');
-System.debug('topics=' + topics);
+// ---- Basic Math ----
+Integer a = 10;
+Integer b = 3;
 
-Set<String> tags = new Set<String>{ 'apex', 'intro', 'apex' };
-System.debug('tags=' + tags);
+Integer sum = a + b;
+Integer difference = a - b;
+Integer product = a * b;
+Decimal quotient = Decimal.valueOf(a) / b;
 
-Map<String, Integer> order = new Map<String, Integer>();
-for (Integer i = 0; i < topics.size(); i++) {
-    order.put(topics[i], i + 1);
-}
-System.debug('Order of "Collections" → ' + order.get('Collections'));
+System.debug('Math -> Sum: ' + sum + 
+             ', Difference: ' + difference + 
+             ', Product: ' + product + 
+             ', Quotient: ' + quotient);
 
-// 4) Call static method from HelloWorldClass
-System.debug(HelloWorld.sayHello('Student'));
-System.debug(HelloWorld.sayHello(null));
+// ---- String Concatenation ----
+String firstName = 'Alexander';
+String lastName = 'Steele';
+String fullName = firstName + ' ' + lastName;
+
+System.debug('Full Name: ' + fullName);
