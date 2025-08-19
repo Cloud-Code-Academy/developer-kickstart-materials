@@ -16,9 +16,13 @@ jobs:
               run: |
                   npm i @salesforce/cli --global
 
-            - name: Scan code
+            - name: Install Code Analyzer plugin
               run: |
-                  sf scanner run --format sarif --target 'force-app/' --category "Design,Best Practices,Performance,Code Style,Error Prone" --outfile 'apexScanResults.sarif'
+                  sf plugins install code-analyzer
+
+            - name: Scan code with Code Analyzer v5
+              run: |
+                  sf code-analyzer run --rule-selector Recommended --workspace force-app/ --output-file apexScanResults.sarif
 
             - name: Authenticate Dev Hub
               run: |
