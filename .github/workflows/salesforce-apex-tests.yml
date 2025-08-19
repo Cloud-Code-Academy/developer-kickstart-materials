@@ -1,9 +1,15 @@
-name: Run Apex Module 1 Unit Tests New
+name: Run Code Scan and Unit Tests
 
 # Definition when the workflow should run
 on:
     # The workflow will run whenever an event happens on a pull request
     workflow_call:
+
+# Permissions needed for uploading SARIF results
+permissions:
+    security-events: write
+    actions: read
+    contents: read
 
 jobs:
     test:
