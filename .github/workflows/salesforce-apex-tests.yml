@@ -5,12 +5,6 @@ on:
     # The workflow will run whenever an event happens on a pull request
     workflow_call:
 
-# Permissions needed for uploading SARIF results
-permissions:
-    security-events: write
-    actions: read
-    contents: read
-
 jobs:
     test:
         runs-on: ubuntu-latest
